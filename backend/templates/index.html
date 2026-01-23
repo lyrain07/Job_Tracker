@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Tracker</title>
+    <link rel="stylesheet" href="../../frontend/style.css">
+</head>
+<body>
+    <h1>Job Tracker Dashboard</h1>
+    <table border="1">
+        <tr>
+            <th>User ID</th>
+            <th>Name</th>
+            <th>Total Applications</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user[0] }}</td>
+            <td>{{ user[1] }}</td>
+            <td>{{ user[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <script src="../../frontend/script.js"></script>
+</body>
+</html>

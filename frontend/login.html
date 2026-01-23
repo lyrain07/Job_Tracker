@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Job Tracker</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body class="login-body">
+    <div class="auth-box">
+        <h1>🎯 Job Tracker</h1>
+        
+        <div class="tabs">
+            <button id="loginTab" class="active" onclick="showLogin()">Login</button>
+            <button id="registerTab" onclick="showRegister()">Register</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginForm" class="form active">
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button class="auth-btn" onclick="login()">Login</button>
+        </div>
+
+        <!-- Register Form -->
+        <div id="registerForm" class="form">
+            <input type="text" id="registerName" placeholder="Full Name">
+            <input type="email" id="registerEmail" placeholder="Email">
+            <input type="password" id="registerPassword" placeholder="Password">
+            <button class="auth-btn" onclick="register()">Register</button>
+        </div>
+
+        <div id="message" class="message"></div>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+</html>

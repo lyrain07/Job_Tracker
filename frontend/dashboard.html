@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Job Tracker</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <div class="navbar">
+        <h2>🎯 Job Tracker</h2>
+        <div class="navbar-right">
+            <span id="userName"></span>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <h1>Welcome, <span id="userGreeting"></span>!</h1>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h2 id="total">0</h2>
+                <p>Total Applications</p>
+            </div>
+            <div class="stat-card">
+                <h2 id="applied">0</h2>
+                <p>Applied</p>
+            </div>
+            <div class="stat-card">
+                <h2 id="interviewing">0</h2>
+                <p>Interviewing</p>
+            </div>
+            <div class="stat-card">
+                <h2 id="rejected">0</h2>
+                <p>Rejected</p>
+            </div>
+        </div>
+
+        <h2 class="section-title">Your Applications</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Job Title</th>
+                        <th>Type</th>
+                        <th>Salary</th>
+                        <th>Applied Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="table">
+                    <tr><td colspan="6">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
