@@ -5,35 +5,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Job Tracker</title>
     <link rel="stylesheet" href="style.css">
-
 </head>
 <body class="login-body">
     <div class="auth-box">
         <h1>🎯 Job Tracker</h1>
         
-        <div class="tabs">
-            <button id="loginTab" class="active" onclick="showLogin()">Login</button>
-            <button id="registerTab" onclick="showRegister()">Register</button>
-        </div>
-
         <!-- Login Form -->
-        <div id="loginForm" class="form active">
+        <div id="loginForm" class="form">
             <input type="email" id="loginEmail" placeholder="Email">
             <input type="password" id="loginPassword" placeholder="Password">
             <button class="auth-btn" onclick="login()">Login</button>
+            <div class="form-footer">
+                Don't have an account? <a onclick="showRegisterPage()">Sign up</a>
+            </div>
         </div>
 
         <!-- Register Form -->
-        <div id="registerForm" class="form">
+        <div id="registerForm" class="form" style="display: none;">
             <input type="text" id="registerName" placeholder="Full Name">
             <input type="email" id="registerEmail" placeholder="Email">
             <input type="password" id="registerPassword" placeholder="Password">
             <button class="auth-btn" onclick="register()">Register</button>
+            <div class="form-footer">
+                Already have an account? <a onclick="showLoginPage()">Login</a>
+            </div>
         </div>
 
         <div id="message" class="message"></div>
     </div>
 
-    <script src="login.js"></script>
+    <script>
+        const API = 'http://localhost:8000';
+
+        function showLoginPage() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('message').className = 'message';
+        }
+
+        function showRegisterPage() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('message').className = 'message';
+        }
+
+        function showMessage(msg, type) {
+            const div = document.getElementById('message');
+            div.textContent = msg;
+            div.className = 'message show ' + type;
+        }
+
+        async function register() {
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+
+            if (!name || !email || !password) {
+                showMessage('Please fill all fields', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(API + '/api/register', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({name, email, password})
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMessage('Registration successful! Please login.', 'success');
+                    setTimeout(showLoginPage, 2000);
+                } else {
+                    showMessage(data.detail, 'error');
+                }
+            } catch (error) {
+                showMessage('Error: Backend not running!', 'error');
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showMessage('Please fill all fields', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(API + '/api/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email, password})
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('user', JSON.stringify(data));
+                    showMessage('Login successful!', 'success');
+                    setTimeout(() => window.location.href = 'dashboard.html', 1000);
+                } else {
+                    // Custom message for no account found
+                    if (response.status === 401) {
+                        const div = document.getElementById('message');
+                        div.innerHTML = 'No account found with this email. <a onclick="showRegisterPage()" style="cursor:pointer; text-decoration:underline;">Sign up</a>';
+                        div.className = 'message show error';
+                    } else {
+                        showMessage(data.detail, 'error');
+                    }
+                }
+            } catch (error) {
+                showMessage('Error: Backend not running!', 'error');
+            }
+        }
+    </script>
 </body>
 </html>

@@ -5,20 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Job Tracker</title>
     <link rel="stylesheet" href="style.css">
-
 </head>
 <body>
+    <!-- Navbar -->
     <div class="navbar">
-        <h2>🎯 Job Tracker</h2>
-        <div class="navbar-right">
-            <span id="userName"></span>
+        <div class="navbar-left">
+            <img src="assets/Job Tracker-logo-transparent.png" alt="Job Tracker Logo" class="navbar-logo">
+        </div>
+        <div class="navbar-menu">
+            <a href="dashboard.html" class="active">Home</a>
+            <a href="#jobs">Jobs</a>
+            <a href="#tracker">Tracker</a>
+            <a href="#profile">Profile</a>
             <button onclick="logout()">Logout</button>
         </div>
     </div>
 
+    <!-- Dashboard Content -->
     <div class="dashboard-container">
         <h1>Welcome, <span id="userGreeting"></span>!</h1>
 
+        <!-- Stats Cards -->
         <div class="stats">
             <div class="stat-card">
                 <h2 id="total">0</h2>
@@ -38,6 +45,7 @@
             </div>
         </div>
 
+        <!-- Applications Table -->
         <h2 class="section-title">Your Applications</h2>
         <div class="table-container">
             <table>
@@ -52,12 +60,59 @@
                     </tr>
                 </thead>
                 <tbody id="table">
-                    <tr><td colspan="6">Loading...</td></tr>
+                    <tr><td colspan="6" style="text-align: center; padding: 40px;">Loading...</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <script src="dashboard.js"></script>
+    <script>
+        const API = 'http://localhost:8000';
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (!user) {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('userGreeting').textContent = user.name;
+
+        // Load dashboard data
+        fetch(API + '/api/dashboard/' + user.user_id)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('total').textContent = data.total_applications;
+                document.getElementById('applied').textContent = data.applied_count;
+                document.getElementById('interviewing').textContent = data.interviewing_count;
+                document.getElementById('rejected').textContent = data.rejected_count;
+            });
+
+        // Load applications
+        fetch(API + '/api/applications/' + user.user_id)
+            .then(res => res.json())
+            .then(apps => {
+                const tbody = document.getElementById('table');
+                
+                if (apps.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #6B7280;">No applications yet</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = apps.map(app => `
+                    <tr>
+                        <td>${app.company}</td>
+                        <td>${app.title}</td>
+                        <td>${app.type}</td>
+                        <td>${app.salary}</td>
+                        <td>${app.date}</td>
+                        <td><span class="status ${app.status}">${app.status}</span></td>
+                    </tr>
+                `).join('');
+            });
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+    </script>
 </body>
 </html>

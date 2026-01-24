@@ -187,7 +187,7 @@ GROUP BY u.user_id, u.name, u.email;
 --test
 --Insert sample users
 INSERT INTO users (name, email, password_hash) VALUES
-('John Doe', 'john@example.com', 'hashed_password123'),
+('John Doe', 'john@example.com', '$2b$12$KIXQnZy...'),
 ('Jane Smith', 'jane@example.com', 'hashed_password456'),
 ('Mike Johnson', 'mike@example.com', 'hashes_password789');
 
@@ -229,7 +229,7 @@ INSERT INTO interviews (application_id, round, interview_date, mode, remarks, re
 
 -- SELECT * FROM interview;
 
---TRUNCATE TABLE interview, application, job, company, users RESTART IDENTITY CASCADE;
+TRUNCATE TABLE interviews, applications, jobs, companies, users RESTART IDENTITY CASCADE;
 
 
 --Test
@@ -296,6 +296,8 @@ SELECT * FROM user_dashboard WHERE user_id = 1;
 
 DROP VIEW IF EXISTS interview_details CASCADE;
 DROP VIEW IF EXISTS application_details CASCADE;
+
+Select * from users;
 
 
 -- DROP TABLE IF EXISTS interviews CASCADE;
