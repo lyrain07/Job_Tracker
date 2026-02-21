@@ -39,14 +39,14 @@
     </div>
 
 
-    <main class="container" style="padding-top: 100px;">
-        <header class="page-header" style="padding: 20px 0;">
+    <main class="container pt-100">
+        <header class="page-header py-20">
             <div>
                 <h1>Application Tracker</h1>
                 <p class="page-subtitle">Manage and monitor your job application progress.</p>
             </div>
             <button class="logout-btn" id="editTrackerBtn" onclick="toggleEditMode()">
-                <i class="fas fa-edit" style="margin-right: 8px;"></i>Edit Tracker
+                <i class="fas fa-edit mr-8"></i>Edit Tracker
             </button>
         </header>
 
@@ -62,12 +62,12 @@
                             <th>Status</th>
                             <th>Interview Round</th>
                             <th>Notes</th>
-                            <th class="edit-col" style="display: none; width: 80px;">Action</th>
+                            <th class="edit-col w-80" style="display: none;">Action</th>
                         </tr>
                     </thead>
                     <tbody id="trackerBody">
                         <tr>
-                            <td colspan="8" style="text-align:center; padding: 40px;">Loading tracker...</td>
+                            <td colspan="8" class="table-loader">Loading tracker...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -77,27 +77,25 @@
 
 
     <div class="modal-overlay" id="detailModal">
-        <div class="modal" style="max-width: 600px;">
+        <div class="modal modal-md">
             <div class="modal-header">
                 <h2 id="detailTitle">Job Details</h2>
                 <button class="close-modal" onclick="closeDetailModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="job-detail-header" style="border: none; padding-bottom: 20px;">
-                    <p class="sub-title" id="detailCompany" style="margin-bottom: 8px;"></p>
-                    <div class="job-meta" style="margin-top: 16px;" id="detailMeta"></div>
+                <div class="job-detail-header detail-header-clean">
+                    <p class="sub-title mb-8" id="detailCompany"></p>
+                    <div class="job-meta mt-16" id="detailMeta"></div>
                 </div>
                 <div class="job-description">
-                    <h4 style="margin-bottom: 12px; font-weight: 700;">Description</h4>
-                    <p class="bio-text" id="detailDesc"
-                        style="color: var(--lt-text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px;">
-                    </p>
+                    <h4 class="mb-12 fw-700">Description</h4>
+                    <p class="bio-text detail-text" id="detailDesc"></p>
 
-                    <div style="margin-bottom: 24px;">
-                        <h4 style="margin-bottom: 12px; font-weight: 700;">Update Application</h4>
-                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                            <div class="form-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
-                                <label style="font-size: 0.8rem; color: var(--lt-text-muted);">Status</label>
+                    <div class="mb-24">
+                        <h4 class="mb-12 fw-700">Update Application</h4>
+                        <div class="flex-group">
+                            <div class="form-group form-group-flex">
+                                <label class="label-sm">Status</label>
                                 <select id="updateStatus" class="input-control" onchange="toggleRoundInput()">
                                     <option value="Applied">Applied</option>
                                     <option value="Interviewing">Interviewing</option>
@@ -105,9 +103,8 @@
                                     <option value="Hired">Hired</option>
                                 </select>
                             </div>
-                            <div id="roundInputGroup" class="form-group"
-                                style="flex: 1; min-width: 200px; margin-bottom: 0; display: none;">
-                                <label style="font-size: 0.8rem; color: var(--lt-text-muted);">Interview Round</label>
+                            <div id="roundInputGroup" class="form-group form-group-flex" style="display: none;">
+                                <label class="label-sm">Interview Round</label>
                                 <select id="updateRound" class="input-control">
                                     <option value="1">Round 1</option>
                                     <option value="2">Round 2</option>
@@ -119,20 +116,15 @@
                         </div>
                     </div>
 
-                    <h4 style="margin-bottom: 12px; font-weight: 700;">My Notes</h4>
-                    <div id="displayNotes" class="bio-text"
-                        style="font-style: italic; background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 12px; color: var(--lt-text-muted); font-size: 0.9rem; min-height: 40px;">
-                    </div>
-                    <textarea id="detailNotes" class="input-control"
-                        style="width: 100%; min-height: 100px; padding: 12px; border: 1px solid var(--lt-border); border-radius: 8px; font-family: inherit; font-size: 0.95rem; resize: vertical;"
+                    <h4 class="mb-12 fw-700">My Notes</h4>
+                    <div id="displayNotes" class="bio-text notes-display"></div>
+                    <textarea id="detailNotes" class="input-control notes-input"
                         placeholder="Add or edit your note here..."></textarea>
                 </div>
-                <div class="modal-actions"
-                    style="margin-top: 32px; border-top: 1px solid var(--lt-border); padding-top: 24px;">
-                    <button class="btn-primary" id="saveTrackerBtn" style="width: auto; padding: 12px 32px;"
-                        onclick="saveApplicationDetails()">Save Changes</button>
-                    <button class="logout-btn" style="width: auto; padding: 12px 32px; height: 48px;"
-                        onclick="closeDetailModal()">Cancel</button>
+                <div class="modal-actions modal-footer">
+                    <button class="btn-primary btn-auto" id="saveTrackerBtn" onclick="saveApplicationDetails()">Save
+                        Changes</button>
+                    <button class="logout-btn btn-auto h-48" onclick="closeDetailModal()">Cancel</button>
                 </div>
             </div>
         </div>

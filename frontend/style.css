@@ -1269,3 +1269,87 @@ tr:hover td {
         align-items: center;
     }
 }
+/* Tracker & Utility Classes */
+.pt-100 { padding-top: 100px; }
+.py-20 { padding: 20px 0; }
+.mr-8 { margin-right: 8px; }
+.mt-16 { margin-top: 16px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.mb-24 { margin-bottom: 24px; }
+.fw-700 { font-weight: 700; }
+.w-80 { width: 80px; }
+.h-48 { height: 48px; }
+
+.table-loader {
+    text-align: center;
+    padding: 40px;
+}
+
+.modal-md {
+    max-width: 600px !important;
+}
+
+.detail-header-clean {
+    border: none !important;
+    padding-bottom: 20px;
+}
+
+.detail-text {
+    color: var(--lt-text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.flex-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.form-group-flex {
+    flex: 1;
+    min-width: 200px;
+    margin-bottom: 0 !important;
+}
+
+.label-sm {
+    font-size: 0.8rem;
+    color: var(--lt-text-muted);
+}
+
+.notes-display {
+    font-style: italic;
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    color: var(--lt-text-muted);
+    font-size: 0.9rem;
+    min-height: 40px;
+}
+
+.notes-input {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border: 1px solid var(--lt-border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: vertical;
+}
+
+.modal-footer {
+    margin-top: 32px;
+    border-top: 1px solid var(--lt-border);
+    padding-top: 24px;
+    display: flex;
+    gap: 12px;
+}
+
+.btn-auto {
+    width: auto !important;
+    padding: 12px 32px !important;
+}
