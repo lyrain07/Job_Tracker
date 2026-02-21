@@ -108,11 +108,11 @@ function openDetailModal(index) {
     toggleRoundInput();
 
     document.getElementById('detailMeta').innerHTML = `
-        <span class="meta-tag">💼 ${app.type || 'N/A'}</span>
-        <span class="meta-tag">💰 ${app.salary || 'N/A'}</span>
-        <span class="meta-tag">📅 Applied: ${new Date(app.date).toLocaleDateString()}</span>
+        <span class="meta-tag">${app.type || 'N/A'}</span>
+        <span class="meta-tag">${app.salary || 'N/A'}</span>
+        <span class="meta-tag">Applied: ${new Date(app.date).toLocaleDateString()}</span>
         <span class="meta-tag"><span class="status-badge status-${app.status}">${app.status}</span></span>
-        ${app.interview_round && app.interview_round > 0 ? `<span class="meta-tag">🎯 Interview Round: ${app.interview_round}</span>` : ''}
+        ${app.interview_round && app.interview_round > 0 ? `<span class="meta-tag">Interview Round: ${app.interview_round}</span>` : ''}
     `;
 
     document.getElementById('displayNotes').textContent = app.notes || 'No notes added for this application.';
