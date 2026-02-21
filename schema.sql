@@ -3,6 +3,11 @@ CREATE TABLE users (
 	name VARCHAR(255) NOT NULL,
 	email VARCHAR(255) unique not null,
 	password_hash VARCHAR(255) not null,
+    bio TEXT,
+    resume_url VARCHAR(500),
+    linkedin_url VARCHAR(500),
+    github_url VARCHAR(500),
+    twitter_url VARCHAR(500),
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -13,6 +18,19 @@ CREATE TABLE companies (
     website VARCHAR(255)
 );
 
+CREATE TABLE skills (
+    skill_id SERIAL PRIMARY KEY,
+    skill_name VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE user_skills (
+    user_id INTEGER NOT NULL,
+    skill_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, skill_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (skill_id) REFERENCES skills(skill_id) ON DELETE CASCADE
+);
+
 CREATE TABLE jobs (
     job_id SERIAL PRIMARY KEY,
     company_id INTEGER NOT NULL,
@@ -20,6 +38,7 @@ CREATE TABLE jobs (
     description TEXT,
     job_type VARCHAR(100),
 	salary_range VARCHAR(100),
+    application_link VARCHAR(500),
 	posted_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (company_id) REFERENCES companies(company_id) ON DELETE CASCADE,
 	CHECK(job_type IN ('Full-time','Part-time','Contract','Remote'))
@@ -34,9 +53,8 @@ CREATE TABLE applications (
     notes TEXT,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (job_id) REFERENCES jobs(job_id) ON DELETE CASCADE,
-    UNIQUE(user_id, job_id),
+    CONSTRAINT unique_user_job UNIQUE(user_id, job_id),
 	CHECK (status IN ('Applied', 'Interviewing', 'Rejected', 'Hired'))
-
 );
 
 CREATE TABLE interviews (
@@ -229,7 +247,7 @@ INSERT INTO interviews (application_id, round, interview_date, mode, remarks, re
 
 -- SELECT * FROM interview;
 
-TRUNCATE TABLE interviews, applications, jobs, companies, users RESTART IDENTITY CASCADE;
+TRUNCATE TABLE user_skills, skills, interviews, applications, jobs, companies, users RESTART IDENTITY CASCADE;
 
 
 --Test
@@ -300,6 +318,8 @@ DROP VIEW IF EXISTS application_details CASCADE;
 Select * from users;
 
 
+-- DROP TABLE IF EXISTS user_skills CASCADE;
+-- DROP TABLE IF EXISTS skills CASCADE;
 -- DROP TABLE IF EXISTS interviews CASCADE;
 -- DROP TABLE IF EXISTS applications CASCADE;
 -- DROP TABLE IF EXISTS jobs CASCADE;

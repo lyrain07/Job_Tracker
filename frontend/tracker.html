@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Tracker - Job Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="light-theme">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard.html" class="logo">JobTracker<span>.</span></a>
+            <div class="nav-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="jobs.html">Jobs</a>
+                <a href="tracker.html" class="active">Tracker</a>
+                <a href="profile.html">Profile</a>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar-overlay"></div>
+    <div class="mobile-sidebar">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="jobs.html">Jobs</a>
+        <a href="tracker.html">Tracker</a>
+        <a href="profile.html">Profile</a>
+        <button class="logout-btn" onclick="logout()" style="margin-top: 20px;">Logout</button>
+    </div>
+
+    <!-- Page Content -->
+    <main class="container" style="padding-top: 100px;">
+        <header class="page-header" style="padding: 20px 0;">
+            <div>
+                <h1>Application Tracker</h1>
+                <p class="page-subtitle">Manage and monitor your job application progress.</p>
+            </div>
+            <button class="logout-btn" id="editTrackerBtn" onclick="toggleEditMode()">
+                <i class="fas fa-edit" style="margin-right: 8px;"></i>Edit Tracker
+            </button>
+        </header>
+
+        <section class="card">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Job Title</th>
+                            <th>Salary</th>
+                            <th>Applied Date</th>
+                            <th>Status</th>
+                            <th>Interview Round</th>
+                            <th class="edit-col" style="display: none; width: 80px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trackerBody">
+                        <tr>
+                            <td colspan="7" style="text-align:center; padding: 40px;">Loading tracker...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Job Detail Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 id="detailTitle">Job Details</h2>
+                <button class="close-modal" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="job-detail-header" style="border: none; padding-bottom: 20px;">
+                    <p class="sub-title" id="detailCompany" style="margin-bottom: 8px;"></p>
+                    <div class="job-meta" style="margin-top: 16px;" id="detailMeta"></div>
+                </div>
+                <div class="job-description">
+                    <h4 style="margin-bottom: 12px; font-weight: 700;">Description</h4>
+                    <p class="bio-text" id="detailDesc"
+                        style="color: var(--lt-text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px;">
+                    </p>
+
+                    <h4 style="margin-bottom: 12px; font-weight: 700;">My Notes</h4>
+                    <p class="bio-text" id="detailNotes"
+                        style="font-style: italic; background: #f8fafc; padding: 16px; border-radius: 8px;"></p>
+                </div>
+                <div class="modal-actions"
+                    style="margin-top: 32px; border-top: 1px solid var(--lt-border); padding-top: 24px;">
+                    <button class="btn-primary" style="width: auto; padding: 12px 32px;"
+                        onclick="closeDetailModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="navigation.js"></script>
+    <script src="tracker.js"></script>
+</body>
+
+</html>

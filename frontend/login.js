@@ -1,24 +1,36 @@
 const API = 'http://localhost:8000';
 
-function showLogin() {
-    document.getElementById('loginForm').classList.add('active');
-    document.getElementById('registerForm').classList.remove('active');
-    document.getElementById('loginTab').classList.add('active');
-    document.getElementById('registerTab').classList.remove('active');
+// ─── Page switching ───────────────────────────────────────────
+
+function showLoginPage() {
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('authSubtitle').textContent = 'Login to manage your career';
+    hideMessage();
 }
 
-function showRegister() {
-    document.getElementById('loginForm').classList.remove('active');
-    document.getElementById('registerForm').classList.add('active');
-    document.getElementById('loginTab').classList.remove('active');
-    document.getElementById('registerTab').classList.add('active');
+function showRegisterPage() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'block';
+    document.getElementById('authSubtitle').textContent = 'Create an account to get started';
+    hideMessage();
 }
 
-function showMessage(msg, type) {
-    const div = document.getElementById('message');
-    div.textContent = msg;
-    div.className = 'message show ' + type;
+// ─── Feedback message helpers ─────────────────────────────────
+
+function showMessage(text, type) {
+    const el = document.getElementById('message');
+    el.textContent = text;
+    el.style.display = 'block';
+    el.style.backgroundColor = type === 'success' ? '#ECFDF5' : '#FEF2F2';
+    el.style.color = type === 'success' ? '#059669' : '#DC2626';
 }
+
+function hideMessage() {
+    document.getElementById('message').style.display = 'none';
+}
+
+// ─── Registration ─────────────────────────────────────────────
 
 async function register() {
     const name = document.getElementById('registerName').value;
@@ -26,56 +38,56 @@ async function register() {
     const password = document.getElementById('registerPassword').value;
 
     if (!name || !email || !password) {
-        showMessage('Fill all fields', 'error');
+        showMessage('Please fill all fields', 'error');
         return;
     }
 
     try {
-        const response = await fetch(API + '/api/register', {
+        const res = await fetch(`${API}/api/register`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({name, email, password})
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password })
         });
+        const data = await res.json();
 
-        const data = await response.json();
-
-        if (response.ok) {
-            showMessage('Success! Now login.', 'success');
-            setTimeout(showLogin, 2000);
+        if (res.ok) {
+            showMessage('Registration successful! Please login.', 'success');
+            setTimeout(showLoginPage, 2000);
         } else {
-            showMessage(data.detail, 'error');
+            showMessage(data.detail || 'Registration failed', 'error');
         }
-    } catch (error) {
-        showMessage('Backend not running!', 'error');
+    } catch {
+        showMessage('Cannot connect to server. Is the backend running?', 'error');
     }
 }
+
+// ─── Login ────────────────────────────────────────────────────
 
 async function login() {
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
 
     if (!email || !password) {
-        showMessage('Fill all fields', 'error');
+        showMessage('Please fill all fields', 'error');
         return;
     }
 
     try {
-        const response = await fetch(API + '/api/login', {
+        const res = await fetch(`${API}/api/login`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({email, password})
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
         });
+        const data = await res.json();
 
-        const data = await response.json();
-
-        if (response.ok) {
+        if (res.ok) {
             localStorage.setItem('user', JSON.stringify(data));
-            showMessage('Login success!', 'success');
+            showMessage('Login successful! Redirecting...', 'success');
             setTimeout(() => window.location.href = 'dashboard.html', 1000);
         } else {
-            showMessage(data.detail, 'error');
+            showMessage(data.detail || 'Invalid email or password', 'error');
         }
-    } catch (error) {
-        showMessage('Backend not running!', 'error');
+    } catch {
+        showMessage('Cannot connect to server. Is the backend running?', 'error');
     }
 }

@@ -2,7 +2,7 @@ import psycopg2
 
 DB_NAME = "Job_Tracker"
 DB_USER = "postgres"
-DB_PASSWORD = "613jm7"
+DB_PASSWORD = "777"
 DB_HOST = "localhost"
 DB_PORT = "5432"
 

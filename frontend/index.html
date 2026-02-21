@@ -1,26 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Tracker - Home</title>
+    <title>Job Tracker - Simplified Career Management</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="landing-body">
-    <div class="landing-container">
-        <div class="About">
-            <h1>Job Tracker</h1>
-            <p>
-                <span>Take control of your job search.</span>
-                Track applications, manage company details, and follow your progress 
-                from application to interview — all in one simple, organized dashboard 
-                designed to keep you focused and stress-free.
-            </p>
-            <a href="login.html" class="landing-btn">Get Started</a>
+
+<body class="landing-page">
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">JobTracker</a>
+            <div class="nav-links">
+                <a href="#hero" class="active">Home</a>
+                <a href="#services">Services</a>
+                <a href="#contact">Contact Us</a>
+                <a href="login.html">Sign In</a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
-        <div class="landing-image">
-            <img src="assets/Landingimage.jpg" alt="Job Tracker Illustration">
-        </div>
+    </nav>
+
+    <div class="sidebar-overlay"></div>
+    <div class="mobile-sidebar">
+        <a href="#hero">Home</a>
+        <a href="#services">Services</a>
+        <a href="#contact">Contact Us</a>
+        <a href="login.html">Sign In</a>
     </div>
+
+    <!-- Section 1:Landing Content -->
+    <header class="hero-section" id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <span class="badge">Simplified Career Tracking</span>
+                <h1>Job Tracker <br>Design Your Future</h1>
+                <p>Take control of your job search. Track applications, manage company details, and follow your progress
+                    from application to offer — all in one organized dashboard designed for the modern seeker.</p>
+                <div class="hero-actions">
+                    <a href="login.html" class="start-btn">Get Started Now</a>
+                    <a href="#services" class="explore-btn">Explore Features</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Section 2:Image Section -->
+    <section class="image-section">
+        <div class="container">
+            <div class="image-wrapper">
+                <img src="assets/Landingimage.jpg" alt="Career Management Dashboard" class="main-landing-image">
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Section 4:Services -->
+    <section class="services-section" id="services">
+        <div class="container">
+            <div class="section-header">
+                <span class="sub-title">Features</span>
+                <h2 class="decorative-title"> Our services</h2>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-search"></i></div>
+                    <h3>Job Search</h3>
+                    <p>Discover thousands of opportunities across different industries and locations with advanced
+                        filtering.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-tasks"></i></div>
+                    <h3>Application Tracking</h3>
+                    <p>Keep a clear record of every application. Track statuses from 'Applied' to 'Hired' effortlessly.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-calendar-check"></i></div>
+                    <h3>Interview Management</h3>
+                    <p>Never miss an interview. Manage rounds, dates, and feedback with our structured interview
+                        tracker.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-user-circle"></i></div>
+                    <h3>Profile Building</h3>
+                    <p>Showcase your skills and experience with a professional profile that employers will love.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Contact Us -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <span class="sub-title">Get In Touch</span>
+                <h2 class="decorative-title">Contact Us</h2>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                    <h3>Contact Us</h3>
+                    <p>+997-9803016355 <br>+977 976-2800739</p>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <h3>Location</h3>
+                    <p>Thapathali, Kathmandu</p>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon"><i class="fas fa-share-alt"></i></div>
+                    <h3>Follow Us</h3>
+                    <div class="social-links" style="justify-content: center; margin-top: 12px;">
+                        <a href="https://github.com/lyrain07"><i class="fab fa-github"></i></a>
+                        <a href="mailto:reemashrestha2019@gmail.com"><i class="fas fa-envelope"></i></a>
+                        <a href="https://www.facebook.com/0rain.7"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 JobTracker. Student project by Reema Kasula & Bibha Ray</p>
+            </div>
+        </div>
+    </footer>
+
 </body>
+
 </html>

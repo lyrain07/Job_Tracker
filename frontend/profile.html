@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Job Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="light-theme">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard.html" class="logo">JobTracker<span>.</span></a>
+            <div class="nav-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="jobs.html">Jobs</a>
+                <a href="tracker.html">Tracker</a>
+                <a href="profile.html" class="active">Profile</a>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar-overlay"></div>
+    <div class="mobile-sidebar">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="jobs.html">Jobs</a>
+        <a href="tracker.html">Tracker</a>
+        <a href="profile.html">Profile</a>
+        <button class="logout-btn" onclick="logout()" style="margin-top: 20px;">Logout <i
+                class="fas fa-sign-out-alt"></i></button>
+    </div>
+
+    <main class="container" style="padding-top: 100px;">
+        <div class="profile-grid">
+            <aside class="profile-sidebar">
+                <div class="profile-card">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+
+                    <!-- Resume Link -->
+                    <div id="resumeBadge" class="status-badge"
+                        style="margin-top: 20px; display: block; text-align: center;">
+                        <i class="fas fa-file-pdf" style="margin-right: 6px;"></i> Resume Link
+                    </div>
+
+                    <!-- Social Media Links -->
+                    <div class="social-links"
+                        style="margin-top: 24px; display: flex; justify-content: center; gap: 16px;">
+                        <a id="linkLinkedin" href="#" target="_blank" class="social-icon" title="LinkedIn"
+                            style="display: none;"><i class="fab fa-linkedin"></i></a>
+                        <a id="linkGithub" href="#" target="_blank" class="social-icon" title="GitHub"
+                            style="display: none;"><i class="fab fa-github"></i></a>
+                        <a id="linkTwitter" href="#" target="_blank" class="social-icon" title="Twitter"
+                            style="display: none;"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content (Right side) -->
+            <section class="profile-main">
+                <!-- Edit Button Top -->
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                    <button class="btn-primary" style="width: auto; padding: 10px 24px; font-size: 0.9rem;"
+                        onclick="openEditModal()">
+                        <i class="fas fa-user-edit" style="margin-right: 8px;"></i> Edit Your Profile
+                    </button>
+                </div>
+
+                <!-- About Me Card -->
+                <div class="card" style="margin-bottom: 30px;">
+                    <div class="card-header">
+                        <h2>About Me</h2>
+                    </div>
+                    <div class="card-body">
+                        <p id="profileBio" class="bio-text">No bio yet. Click edit to add one!</p>
+                    </div>
+                </div>
+
+                <!-- Skills Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                            <h2>Professional Skills</h2>
+                            <button class="btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;"
+                                onclick="openSkillsModal()">
+                                <i class="fas fa-plus" style="margin-right: 8px;"></i>Manage Skills
+                            </button>
+                        </div>
+                    </div>
+                    <div id="skillsList" class="skills-grid">
+                        <div class="loading-placeholder">Loading skills...</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Update Profile</h2>
+                <button class="close-modal" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="editBio">Bio</label>
+                <textarea id="editBio" class="input-control" rows="4"
+                    placeholder="Tell us about yourself..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="editResume">Resume URL</label>
+                <input type="url" id="editResume" class="input-control" placeholder="https://drive.google.com/...">
+            </div>
+            <div class="form-group">
+                <label for="editLinkedin">LinkedIn URL</label>
+                <input type="url" id="editLinkedin" class="input-control" placeholder="https://linkedin.com/in/...">
+            </div>
+            <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                    <label for="editGithub">GitHub</label>
+                    <input type="url" id="editGithub" class="input-control" placeholder="github.com/...">
+                </div>
+                <div>
+                    <label for="editTwitter">Twitter</label>
+                    <input type="url" id="editTwitter" class="input-control" placeholder="twitter.com/...">
+                </div>
+            </div>
+            <div id="profileMessage" class="feedback-message" style="display: none;"></div>
+            <div class="modal-actions">
+                <button class="logout-btn" onclick="closeEditModal()">Cancel</button>
+                <button class="btn-primary" onclick="saveProfile()" style="width: auto; padding: 12px 32px;">Save
+                    Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skills Modal (Tag-based) -->
+    <div class="modal-overlay" id="skillsModal">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Manage Skills</h2>
+                <button class="close-modal" onclick="closeSkillsModal()">&times;</button>
+            </div>
+            <p class="page-subtitle" style="margin-bottom: 20px;">Type a skill (e.g., Python) and press Enter.</p>
+
+            <div class="tag-input-container" id="tagContainer">
+                <!-- Tags will be rendered here -->
+                <input type="text" id="skillInput" class="tag-input-field" placeholder="Add a skill...">
+            </div>
+
+            <div id="skillsMessage" class="feedback-message" style="display: none; margin-top: 16px;"></div>
+
+            <div class="modal-actions" style="margin-top: 32px;">
+                <button class="logout-btn" onclick="closeSkillsModal()">Cancel</button>
+                <button class="btn-primary" onclick="saveSkills()" style="width: auto; padding: 12px 32px;">Save
+                    Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="navigation.js"></script>
+    <script src="profile.js"></script>
+</body>
+
+</html>

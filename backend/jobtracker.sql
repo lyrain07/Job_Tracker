@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict 6s81GSlOzo2FAccEs99UwSZGQws0W8GMFjFJOcA71f3HTJOFFiSEuHGqc5BSEho
+\restrict dQACNCPoTZs2JePmc3d5PrMo8Dytre9dYvpMXHEWJWMLFF2PbVHdu7jYDwxaH7e
 
 -- Dumped from database version 18.1
 -- Dumped by pg_dump version 18.1
 
--- Started on 2026-01-23 20:50:57
+-- Started on 2026-02-21 13:20:31
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -26,7 +26,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 226 (class 1259 OID 17267)
+-- TOC entry 226 (class 1259 OID 17996)
 -- Name: applications; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -44,7 +44,7 @@ CREATE TABLE public.applications (
 ALTER TABLE public.applications OWNER TO postgres;
 
 --
--- TOC entry 222 (class 1259 OID 17237)
+-- TOC entry 222 (class 1259 OID 17966)
 -- Name: companies; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -59,7 +59,7 @@ CREATE TABLE public.companies (
 ALTER TABLE public.companies OWNER TO postgres;
 
 --
--- TOC entry 224 (class 1259 OID 17248)
+-- TOC entry 224 (class 1259 OID 17977)
 -- Name: jobs; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -78,7 +78,7 @@ CREATE TABLE public.jobs (
 ALTER TABLE public.jobs OWNER TO postgres;
 
 --
--- TOC entry 220 (class 1259 OID 17221)
+-- TOC entry 220 (class 1259 OID 17950)
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -87,6 +87,8 @@ CREATE TABLE public.users (
     name character varying(255) NOT NULL,
     email character varying(255) NOT NULL,
     password_hash character varying(255) NOT NULL,
+    bio text,
+    resume_url character varying(500),
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -94,7 +96,7 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO postgres;
 
 --
--- TOC entry 229 (class 1259 OID 17315)
+-- TOC entry 232 (class 1259 OID 18072)
 -- Name: application_details; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -117,7 +119,7 @@ CREATE VIEW public.application_details AS
 ALTER VIEW public.application_details OWNER TO postgres;
 
 --
--- TOC entry 225 (class 1259 OID 17266)
+-- TOC entry 225 (class 1259 OID 17995)
 -- Name: applications_application_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -133,7 +135,7 @@ CREATE SEQUENCE public.applications_application_id_seq
 ALTER SEQUENCE public.applications_application_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5102 (class 0 OID 0)
+-- TOC entry 5123 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: applications_application_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -142,7 +144,7 @@ ALTER SEQUENCE public.applications_application_id_seq OWNED BY public.applicatio
 
 
 --
--- TOC entry 221 (class 1259 OID 17236)
+-- TOC entry 221 (class 1259 OID 17965)
 -- Name: companies_company_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -158,7 +160,7 @@ CREATE SEQUENCE public.companies_company_id_seq
 ALTER SEQUENCE public.companies_company_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5103 (class 0 OID 0)
+-- TOC entry 5124 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: companies_company_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -167,7 +169,7 @@ ALTER SEQUENCE public.companies_company_id_seq OWNED BY public.companies.company
 
 
 --
--- TOC entry 228 (class 1259 OID 17294)
+-- TOC entry 228 (class 1259 OID 18023)
 -- Name: interviews; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -186,7 +188,7 @@ CREATE TABLE public.interviews (
 ALTER TABLE public.interviews OWNER TO postgres;
 
 --
--- TOC entry 230 (class 1259 OID 17320)
+-- TOC entry 233 (class 1259 OID 18077)
 -- Name: interview_details; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -214,7 +216,7 @@ CREATE VIEW public.interview_details AS
 ALTER VIEW public.interview_details OWNER TO postgres;
 
 --
--- TOC entry 227 (class 1259 OID 17293)
+-- TOC entry 227 (class 1259 OID 18022)
 -- Name: interviews_interview_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -230,7 +232,7 @@ CREATE SEQUENCE public.interviews_interview_id_seq
 ALTER SEQUENCE public.interviews_interview_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5104 (class 0 OID 0)
+-- TOC entry 5125 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: interviews_interview_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -239,7 +241,7 @@ ALTER SEQUENCE public.interviews_interview_id_seq OWNED BY public.interviews.int
 
 
 --
--- TOC entry 223 (class 1259 OID 17247)
+-- TOC entry 223 (class 1259 OID 17976)
 -- Name: jobs_job_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -255,7 +257,7 @@ CREATE SEQUENCE public.jobs_job_id_seq
 ALTER SEQUENCE public.jobs_job_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5105 (class 0 OID 0)
+-- TOC entry 5126 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: jobs_job_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -264,7 +266,45 @@ ALTER SEQUENCE public.jobs_job_id_seq OWNED BY public.jobs.job_id;
 
 
 --
--- TOC entry 233 (class 1259 OID 17335)
+-- TOC entry 230 (class 1259 OID 18042)
+-- Name: skills; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.skills (
+    skill_id integer NOT NULL,
+    skill_name character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.skills OWNER TO postgres;
+
+--
+-- TOC entry 229 (class 1259 OID 18041)
+-- Name: skills_skill_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.skills_skill_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.skills_skill_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5127 (class 0 OID 0)
+-- Dependencies: 229
+-- Name: skills_skill_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.skills_skill_id_seq OWNED BY public.skills.skill_id;
+
+
+--
+-- TOC entry 236 (class 1259 OID 18092)
 -- Name: upcoming_interviews; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -290,7 +330,7 @@ CREATE VIEW public.upcoming_interviews AS
 ALTER VIEW public.upcoming_interviews OWNER TO postgres;
 
 --
--- TOC entry 234 (class 1259 OID 17340)
+-- TOC entry 237 (class 1259 OID 18097)
 -- Name: user_dashboard; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -338,7 +378,7 @@ CREATE VIEW public.user_dashboard AS
 ALTER VIEW public.user_dashboard OWNER TO postgres;
 
 --
--- TOC entry 231 (class 1259 OID 17325)
+-- TOC entry 234 (class 1259 OID 18082)
 -- Name: user_profile; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -361,7 +401,7 @@ CREATE VIEW public.user_profile AS
 ALTER VIEW public.user_profile OWNER TO postgres;
 
 --
--- TOC entry 232 (class 1259 OID 17330)
+-- TOC entry 235 (class 1259 OID 18087)
 -- Name: user_profile_full; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -389,7 +429,20 @@ CREATE VIEW public.user_profile_full AS
 ALTER VIEW public.user_profile_full OWNER TO postgres;
 
 --
--- TOC entry 219 (class 1259 OID 17220)
+-- TOC entry 231 (class 1259 OID 18052)
+-- Name: user_skills; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_skills (
+    user_id integer NOT NULL,
+    skill_id integer NOT NULL
+);
+
+
+ALTER TABLE public.user_skills OWNER TO postgres;
+
+--
+-- TOC entry 219 (class 1259 OID 17949)
 -- Name: users_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -405,7 +458,7 @@ CREATE SEQUENCE public.users_user_id_seq
 ALTER SEQUENCE public.users_user_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5106 (class 0 OID 0)
+-- TOC entry 5128 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: users_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -414,7 +467,7 @@ ALTER SEQUENCE public.users_user_id_seq OWNED BY public.users.user_id;
 
 
 --
--- TOC entry 4905 (class 2604 OID 17270)
+-- TOC entry 4914 (class 2604 OID 17999)
 -- Name: applications application_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -422,7 +475,7 @@ ALTER TABLE ONLY public.applications ALTER COLUMN application_id SET DEFAULT nex
 
 
 --
--- TOC entry 4902 (class 2604 OID 17240)
+-- TOC entry 4911 (class 2604 OID 17969)
 -- Name: companies company_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -430,7 +483,7 @@ ALTER TABLE ONLY public.companies ALTER COLUMN company_id SET DEFAULT nextval('p
 
 
 --
--- TOC entry 4908 (class 2604 OID 17297)
+-- TOC entry 4917 (class 2604 OID 18026)
 -- Name: interviews interview_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -438,7 +491,7 @@ ALTER TABLE ONLY public.interviews ALTER COLUMN interview_id SET DEFAULT nextval
 
 
 --
--- TOC entry 4903 (class 2604 OID 17251)
+-- TOC entry 4912 (class 2604 OID 17980)
 -- Name: jobs job_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -446,7 +499,15 @@ ALTER TABLE ONLY public.jobs ALTER COLUMN job_id SET DEFAULT nextval('public.job
 
 
 --
--- TOC entry 4900 (class 2604 OID 17224)
+-- TOC entry 4919 (class 2604 OID 18045)
+-- Name: skills skill_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.skills ALTER COLUMN skill_id SET DEFAULT nextval('public.skills_skill_id_seq'::regclass);
+
+
+--
+-- TOC entry 4909 (class 2604 OID 17953)
 -- Name: users user_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -454,7 +515,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN user_id SET DEFAULT nextval('public.u
 
 
 --
--- TOC entry 5094 (class 0 OID 17267)
+-- TOC entry 5112 (class 0 OID 17996)
 -- Dependencies: 226
 -- Data for Name: applications; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -469,7 +530,7 @@ COPY public.applications (application_id, user_id, job_id, applied_date, status,
 
 
 --
--- TOC entry 5090 (class 0 OID 17237)
+-- TOC entry 5108 (class 0 OID 17966)
 -- Dependencies: 222
 -- Data for Name: companies; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -480,11 +541,19 @@ COPY public.companies (company_id, company_name, location, website) FROM stdin;
 3	Amazon	Seattle, WA	https://amazon.com
 4	Meta	Menlo Park, CA	https://meta.com
 5	Apple	Cupertino, CA	https://apple.com
+6	Tesla	Austin, TX	https://tesla.com
+7	Netflix	Los Gatos, CA	https://netflix.com
+8	Goldman Sachs	New York, NY	https://goldmansachs.com
+9	Pfizer	New York, NY	https://pfizer.com
+10	Airbnb	San Francisco, CA	https://airbnb.com
+11	Nike	Beaverton, OR	https://nike.com
+12	IBM	Armonk, NY	https://ibm.com
+13	Salesforce	San Francisco, CA	https://salesforce.com
 \.
 
 
 --
--- TOC entry 5096 (class 0 OID 17294)
+-- TOC entry 5114 (class 0 OID 18023)
 -- Dependencies: 228
 -- Data for Name: interviews; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -499,36 +568,144 @@ COPY public.interviews (interview_id, application_id, round, interview_date, mod
 
 
 --
--- TOC entry 5092 (class 0 OID 17248)
+-- TOC entry 5110 (class 0 OID 17977)
 -- Dependencies: 224
 -- Data for Name: jobs; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.jobs (job_id, company_id, title, description, job_type, salary_range, posted_date) FROM stdin;
-1	1	Software Engineer	Build scalable applications using modern technologies	Full-time	$100k-$150k	2026-01-23 19:49:44.700578
-2	1	Frontend Developer	Create amazing user interfaces with React	Full-time	$90k-$130k	2026-01-23 19:49:44.700578
-3	2	Data Analyst	Analyze data and create insights for business decisions	Full-time	$80k-$120k	2026-01-23 19:49:44.700578
-4	3	Backend Developer	Design and implement server-side logic	Remote	$95k-$140k	2026-01-23 19:49:44.700578
-5	4	UI/UX Designer	Design intuitive and beautiful user experiences	Contract	$70k-$110k	2026-01-23 19:49:44.700578
-6	5	Mobile Developer	Build iOS and Android applications	Full-time	$100k-$145k	2026-01-23 19:49:44.700578
+1	1	Software Engineer	We are seeking a passionate Software Engineer to design, develop, and maintain scalable web applications that power critical business operations. In this role, you will collaborate with cross-functional teams to build reliable backend services, optimize system performance, and implement secure RESTful APIs. The ideal candidate has strong knowledge of data structures and algorithms, hands-on experience with backend frameworks, and familiarity with relational databases such as PostgreSQL. You should be comfortable working in an agile development environment, writing clean and testable code, and participating in code reviews. Experience with cloud platforms, CI/CD pipelines, and version control systems like Git is highly valued. This position offers opportunities to work on impactful projects and grow into a senior technical role.	Full-time	$100k-$150k	2026-02-21 13:02:13.226149
+2	1	Frontend Developer	We are looking for a creative and detail-oriented Frontend Developer to craft responsive and engaging user interfaces for modern web applications. You will translate UI/UX designs into interactive experiences using HTML, CSS, JavaScript, and frameworks such as React. The role involves collaborating closely with backend developers to integrate APIs and ensure seamless data flow across the application. Strong understanding of responsive design principles, accessibility standards, and performance optimization techniques is required. Experience with state management libraries, component-based architecture, and version control workflows is preferred. This role provides the opportunity to shape user experiences that directly impact customer satisfaction and product success.	Full-time	$90k-$130k	2026-02-21 13:02:13.226149
+3	2	Data Analyst	We are hiring a results-driven Data Analyst to collect, process, and analyze complex datasets that inform strategic business decisions. You will be responsible for creating dashboards, generating reports, and presenting actionable insights to stakeholders across departments. Strong proficiency in SQL, data visualization tools, and spreadsheet analysis is essential. The ideal candidate has a solid understanding of statistical concepts and the ability to interpret trends and patterns effectively. Experience working with large datasets and familiarity with business intelligence platforms is highly desirable. This role is ideal for someone who enjoys transforming data into meaningful stories that drive organizational growth.	Full-time	$80k-$120k	2026-02-21 13:02:13.226149
+4	3	Backend Developer	We are seeking a skilled Backend Developer to build and maintain secure, high-performance server-side applications. You will design scalable APIs, manage database interactions, and ensure system reliability and security. The ideal candidate has experience with backend technologies such as FastAPI or similar frameworks, and strong knowledge of PostgreSQL or other relational databases. Responsibilities include implementing authentication mechanisms, optimizing queries, and collaborating with frontend teams for smooth feature integration. Familiarity with containerization tools like Docker and deployment workflows is considered a strong advantage. This remote role offers flexibility and the chance to contribute to architecture-level decisions.	Remote	$95k-$140k	2026-02-21 13:02:13.226149
+5	4	UI/UX Designer	We are looking for a talented UI/UX Designer to create intuitive, visually appealing, and user-centered digital experiences. In this role, you will conduct user research, develop wireframes and interactive prototypes, and refine visual designs based on user feedback. Proficiency in design tools such as Figma or Adobe XD is required, along with a strong understanding of usability principles and accessibility guidelines. You will collaborate closely with product managers and developers to ensure that design concepts are effectively translated into functional interfaces. This position is ideal for someone who combines creativity with analytical thinking to enhance overall user satisfaction.	Contract	$70k-$110k	2026-02-21 13:02:13.226149
+6	5	Mobile Developer	We are seeking an experienced Mobile Developer to design and build high-quality mobile applications for iOS and Android platforms. You will be responsible for implementing new features, optimizing application performance, and ensuring smooth user interactions across devices. The ideal candidate has hands-on experience with mobile frameworks such as Flutter, React Native, or native development tools. Strong understanding of API integration, mobile UI standards, and app deployment processes is required. You should be comfortable debugging issues, improving code efficiency, and collaborating with cross-functional teams. This role offers the opportunity to contribute to innovative mobile solutions used by a growing user base.	Full-time	$100k-$145k	2026-02-21 13:02:13.226149
+7	6	DevOps Engineer	We are seeking a DevOps Engineer to manage CI/CD pipelines, cloud infrastructure, and deployment workflows. The ideal candidate has experience with Docker, Kubernetes, and cloud platforms such as AWS or Azure. Strong scripting skills and understanding of system reliability are essential.	Full-time	$110k-$160k	2026-02-21 13:02:13.226149
+8	7	Machine Learning Engineer	Design and deploy machine learning models that power recommendation systems and data-driven insights. Candidates should have experience with Python, TensorFlow or PyTorch, and data preprocessing techniques.	Full-time	$120k-$170k	2026-02-21 13:02:13.226149
+9	8	Cybersecurity Analyst	Protect organizational systems by monitoring threats, performing vulnerability assessments, and implementing security protocols. Knowledge of network security, encryption, and incident response is required.	Full-time	$95k-$140k	2026-02-21 13:02:13.226149
+10	9	Financial Analyst	Analyze financial data, prepare forecasts, and support strategic investment decisions. Strong analytical skills, Excel proficiency, and understanding of financial modeling are required.	Full-time	$85k-$130k	2026-02-21 13:02:13.226149
+11	9	Investment Banking Associate	Support mergers, acquisitions, and capital raising activities by preparing presentations, conducting market research, and performing valuation analysis.	Full-time	$130k-$200k	2026-02-21 13:02:13.226149
+12	10	Digital Marketing Specialist	Develop and execute online marketing campaigns across social media, SEO, and paid advertising platforms. Experience with analytics tools and content strategy is preferred.	Full-time	$70k-$110k	2026-02-21 13:02:13.226149
+13	11	Sales Executive	Drive revenue growth by identifying new business opportunities and managing client relationships. Strong communication and negotiation skills are essential.	Full-time	$75k-$120k	2026-02-21 13:02:13.226149
+14	13	Brand Manager	Lead brand strategy, oversee marketing campaigns, and ensure consistent messaging across channels. Experience in consumer behavior analysis and market research is required.	Full-time	$90k-$140k	2026-02-21 13:02:13.226149
+15	12	Human Resources Manager	Oversee recruitment, employee relations, and performance management processes. Strong interpersonal skills and knowledge of labor laws are required.	Full-time	$80k-$120k	2026-02-21 13:02:13.226149
+16	6	Operations Manager	Coordinate cross-departmental operations to improve efficiency and productivity. Experience in supply chain management and process optimization is preferred.	Full-time	$95k-$145k	2026-02-21 13:02:13.226149
+17	10	Healthcare Data Coordinator	Manage healthcare data records, ensure regulatory compliance, and assist in reporting. Experience in healthcare systems and data accuracy standards is required.	Full-time	$65k-$95k	2026-02-21 13:02:13.226149
+18	10	Clinical Research Associate	Monitor clinical trials, ensure regulatory compliance, and analyze trial data. A background in life sciences or related fields is preferred.	Contract	$75k-$115k	2026-02-21 13:02:13.226149
+19	7	Technical Trainer	Develop and deliver training programs on technical tools and systems. Strong presentation skills and hands-on technical knowledge are essential.	Full-time	$70k-$105k	2026-02-21 13:02:13.226149
+20	12	Learning & Development Specialist	Design employee development programs and training materials to enhance workforce skills and engagement.	Full-time	$75k-$110k	2026-02-21 13:02:13.226149
+21	7	Content Strategist	Plan, create, and manage engaging content across digital platforms. Experience in storytelling, SEO, and analytics is preferred.	Full-time	$70k-$115k	2026-02-21 13:02:13.226149
+22	10	Product Manager	Lead cross-functional teams to deliver innovative products from concept to launch. Strong leadership and strategic planning skills required.	Full-time	$110k-$160k	2026-02-21 13:02:13.226149
+23	6	Supply Chain Analyst	Analyze supply chain processes to improve efficiency and reduce costs. Strong analytical and problem-solving skills required.	Full-time	$80k-$120k	2026-02-21 13:02:13.226149
+24	13	Retail Operations Supervisor	Oversee daily retail operations, manage staff performance, and ensure excellent customer experience.	Full-time	$60k-$90k	2026-02-21 13:02:13.226149
+25	11	Customer Success Manager	Build long-term client relationships, ensure customer satisfaction, and drive retention strategies.	Remote	$75k-$115k	2026-02-21 13:02:13.226149
+26	12	Business Analyst	Gather and analyze business requirements to support strategic initiatives and technology implementations.	Full-time	$85k-$125k	2026-02-21 13:02:13.226149
 \.
 
 
 --
--- TOC entry 5088 (class 0 OID 17221)
+-- TOC entry 5116 (class 0 OID 18042)
+-- Dependencies: 230
+-- Data for Name: skills; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.skills (skill_id, skill_name) FROM stdin;
+1	Java
+2	C++
+3	C#
+4	Go
+5	TypeScript
+6	Kotlin
+7	Swift
+8	Node.js
+9	Express.js
+10	Django
+11	Flask
+12	REST APIs
+13	GraphQL
+14	JWT Authentication
+15	MySQL
+16	MongoDB
+17	Redis
+18	Data Analysis
+19	Machine Learning
+20	Power BI
+21	Tableau
+22	AWS
+23	Azure
+24	Google Cloud
+25	Kubernetes
+26	CI/CD
+27	Linux
+28	Terraform
+29	React Native
+30	Flutter
+31	Android Development
+32	iOS Development
+33	Figma
+34	UI Design
+35	UX Research
+36	Adobe XD
+37	Project Management
+38	Agile Methodology
+39	Scrum
+40	Business Analysis
+41	Strategic Planning
+42	Digital Marketing
+43	SEO
+44	Content Marketing
+45	Email Marketing
+46	CRM Tools
+47	Sales Negotiation
+48	Financial Modeling
+49	Budget Planning
+50	Supply Chain Management
+51	Risk Management
+52	Communication
+53	Leadership
+54	Problem Solving
+55	Critical Thinking
+56	Team Collaboration
+57	Time Management
+58	Public Speaking
+\.
+
+
+--
+-- TOC entry 5117 (class 0 OID 18052)
+-- Dependencies: 231
+-- Data for Name: user_skills; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.user_skills (user_id, skill_id) FROM stdin;
+1	1
+1	4
+1	5
+2	2
+2	3
+2	7
+2	8
+3	1
+3	5
+3	6
+\.
+
+
+--
+-- TOC entry 5106 (class 0 OID 17950)
 -- Dependencies: 220
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (user_id, name, email, password_hash, created_at) FROM stdin;
-1	John Doe	john@example.com	hashed_password123	2026-01-23 19:49:44.700578
-2	Jane Smith	jane@example.com	hashed_password456	2026-01-23 19:49:44.700578
-3	Mike Johnson	mike@example.com	hashes_password789	2026-01-23 19:49:44.700578
+COPY public.users (user_id, name, email, password_hash, bio, resume_url, created_at) FROM stdin;
+1	John Doe	john@example.com	$2b$12$KIXQnZy...	Passionate software engineer with a love for building scalable systems.	\N	2026-02-21 13:02:13.226149
+2	Jane Smith	jane@example.com	hashed_password456	Frontend specialist focused on user-centric design.	\N	2026-02-21 13:02:13.226149
+3	Mike Johnson	mike@example.com	hashes_password789	Backend developer with expertise in Python and SQL.	\N	2026-02-21 13:02:13.226149
 \.
 
 
 --
--- TOC entry 5107 (class 0 OID 0)
+-- TOC entry 5129 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: applications_application_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -537,16 +714,16 @@ SELECT pg_catalog.setval('public.applications_application_id_seq', 5, true);
 
 
 --
--- TOC entry 5108 (class 0 OID 0)
+-- TOC entry 5130 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: companies_company_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.companies_company_id_seq', 5, true);
+SELECT pg_catalog.setval('public.companies_company_id_seq', 13, true);
 
 
 --
--- TOC entry 5109 (class 0 OID 0)
+-- TOC entry 5131 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: interviews_interview_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -555,16 +732,25 @@ SELECT pg_catalog.setval('public.interviews_interview_id_seq', 5, true);
 
 
 --
--- TOC entry 5110 (class 0 OID 0)
+-- TOC entry 5132 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: jobs_job_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.jobs_job_id_seq', 6, true);
+SELECT pg_catalog.setval('public.jobs_job_id_seq', 26, true);
 
 
 --
--- TOC entry 5111 (class 0 OID 0)
+-- TOC entry 5133 (class 0 OID 0)
+-- Dependencies: 229
+-- Name: skills_skill_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.skills_skill_id_seq', 58, true);
+
+
+--
+-- TOC entry 5134 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -573,7 +759,7 @@ SELECT pg_catalog.setval('public.users_user_id_seq', 3, true);
 
 
 --
--- TOC entry 4922 (class 2606 OID 17280)
+-- TOC entry 4932 (class 2606 OID 18009)
 -- Name: applications applications_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -582,7 +768,7 @@ ALTER TABLE ONLY public.applications
 
 
 --
--- TOC entry 4924 (class 2606 OID 17282)
+-- TOC entry 4934 (class 2606 OID 18011)
 -- Name: applications applications_user_id_job_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -591,7 +777,7 @@ ALTER TABLE ONLY public.applications
 
 
 --
--- TOC entry 4918 (class 2606 OID 17246)
+-- TOC entry 4928 (class 2606 OID 17975)
 -- Name: companies companies_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -600,7 +786,7 @@ ALTER TABLE ONLY public.companies
 
 
 --
--- TOC entry 4929 (class 2606 OID 17306)
+-- TOC entry 4939 (class 2606 OID 18035)
 -- Name: interviews interviews_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -609,7 +795,7 @@ ALTER TABLE ONLY public.interviews
 
 
 --
--- TOC entry 4920 (class 2606 OID 17260)
+-- TOC entry 4930 (class 2606 OID 17989)
 -- Name: jobs jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -618,7 +804,34 @@ ALTER TABLE ONLY public.jobs
 
 
 --
--- TOC entry 4914 (class 2606 OID 17235)
+-- TOC entry 4941 (class 2606 OID 18049)
+-- Name: skills skills_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.skills
+    ADD CONSTRAINT skills_pkey PRIMARY KEY (skill_id);
+
+
+--
+-- TOC entry 4943 (class 2606 OID 18051)
+-- Name: skills skills_skill_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.skills
+    ADD CONSTRAINT skills_skill_name_key UNIQUE (skill_name);
+
+
+--
+-- TOC entry 4945 (class 2606 OID 18058)
+-- Name: user_skills user_skills_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_skills
+    ADD CONSTRAINT user_skills_pkey PRIMARY KEY (user_id, skill_id);
+
+
+--
+-- TOC entry 4924 (class 2606 OID 17964)
 -- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -627,7 +840,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4916 (class 2606 OID 17233)
+-- TOC entry 4926 (class 2606 OID 17962)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -636,7 +849,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4925 (class 1259 OID 17313)
+-- TOC entry 4935 (class 1259 OID 18070)
 -- Name: idx_applications_job; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -644,7 +857,7 @@ CREATE INDEX idx_applications_job ON public.applications USING btree (job_id);
 
 
 --
--- TOC entry 4926 (class 1259 OID 17312)
+-- TOC entry 4936 (class 1259 OID 18069)
 -- Name: idx_applications_user; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -652,7 +865,7 @@ CREATE INDEX idx_applications_user ON public.applications USING btree (user_id);
 
 
 --
--- TOC entry 4927 (class 1259 OID 17314)
+-- TOC entry 4937 (class 1259 OID 18071)
 -- Name: idx_interviews_application; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -660,7 +873,7 @@ CREATE INDEX idx_interviews_application ON public.interviews USING btree (applic
 
 
 --
--- TOC entry 4931 (class 2606 OID 17288)
+-- TOC entry 4947 (class 2606 OID 18017)
 -- Name: applications applications_job_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -669,7 +882,7 @@ ALTER TABLE ONLY public.applications
 
 
 --
--- TOC entry 4932 (class 2606 OID 17283)
+-- TOC entry 4948 (class 2606 OID 18012)
 -- Name: applications applications_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -678,7 +891,7 @@ ALTER TABLE ONLY public.applications
 
 
 --
--- TOC entry 4933 (class 2606 OID 17307)
+-- TOC entry 4949 (class 2606 OID 18036)
 -- Name: interviews interviews_application_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -687,7 +900,7 @@ ALTER TABLE ONLY public.interviews
 
 
 --
--- TOC entry 4930 (class 2606 OID 17261)
+-- TOC entry 4946 (class 2606 OID 17990)
 -- Name: jobs jobs_company_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -695,11 +908,29 @@ ALTER TABLE ONLY public.jobs
     ADD CONSTRAINT jobs_company_id_fkey FOREIGN KEY (company_id) REFERENCES public.companies(company_id) ON DELETE CASCADE;
 
 
--- Completed on 2026-01-23 20:50:58
+--
+-- TOC entry 4950 (class 2606 OID 18064)
+-- Name: user_skills user_skills_skill_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_skills
+    ADD CONSTRAINT user_skills_skill_id_fkey FOREIGN KEY (skill_id) REFERENCES public.skills(skill_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 4951 (class 2606 OID 18059)
+-- Name: user_skills user_skills_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_skills
+    ADD CONSTRAINT user_skills_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
+
+
+-- Completed on 2026-02-21 13:20:32
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 6s81GSlOzo2FAccEs99UwSZGQws0W8GMFjFJOcA71f3HTJOFFiSEuHGqc5BSEho
+\unrestrict dQACNCPoTZs2JePmc3d5PrMo8Dytre9dYvpMXHEWJWMLFF2PbVHdu7jYDwxaH7e
 

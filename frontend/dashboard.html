@@ -1,118 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Job Tracker</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
-    <!-- Navbar -->
-    <div class="navbar">
-        <div class="navbar-left">
-            <img src="assets/Job Tracker-logo-transparent.png" alt="Job Tracker Logo" class="navbar-logo">
+
+<body class="light-theme">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard.html" class="logo">JobTracker<span>.</span></a>
+            <div class="nav-links">
+                <a href="dashboard.html" class="active">Dashboard</a>
+                <a href="jobs.html">Jobs</a>
+                <a href="tracker.html">Tracker</a>
+                <a href="profile.html">Profile</a>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
-        <div class="navbar-menu">
-            <a href="dashboard.html" class="active">Home</a>
-            <a href="#jobs">Jobs</a>
-            <a href="#tracker">Tracker</a>
-            <a href="#profile">Profile</a>
-            <button onclick="logout()">Logout</button>
-        </div>
+    </nav>
+
+    <div class="sidebar-overlay"></div>
+    <div class="mobile-sidebar">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="jobs.html">Jobs</a>
+        <a href="tracker.html">Tracker</a>
+        <a href="profile.html">Profile</a>
+        <button class="logout-btn" onclick="logout()" style="margin-top: 20px;">Logout</button>
     </div>
 
-    <!-- Dashboard Content -->
-    <div class="dashboard-container">
-        <h1>Welcome, <span id="userGreeting"></span>!</h1>
+    <!-- Page Content -->
+    <main class="container">
+        <header class="page-header">
+            <div>
+                <h1>Hello, <span id="userGreeting">Candidate</span>!</h1>
+                <p class="page-subtitle">Here's what's happening with your applications today.</p>
+            </div>
+        </header>
 
-        <!-- Stats Cards -->
-        <div class="stats">
+        <!-- Stats Grid -->
+        <section class="stats-grid">
             <div class="stat-card">
-                <h2 id="total">0</h2>
-                <p>Total Applications</p>
+                <div class="label">Total Applications</div>
+                <div class="value" id="total">0</div>
             </div>
             <div class="stat-card">
-                <h2 id="applied">0</h2>
-                <p>Applied</p>
+                <div class="label">Interviewing</div>
+                <div class="value value--yellow" id="interviewing">0</div>
             </div>
             <div class="stat-card">
-                <h2 id="interviewing">0</h2>
-                <p>Interviewing</p>
+                <div class="label">Rejected</div>
+                <div class="value value--red" id="rejected">0</div>
             </div>
             <div class="stat-card">
-                <h2 id="rejected">0</h2>
-                <p>Rejected</p>
+                <div class="label">Offers / Hired</div>
+                <div class="value value--green" id="hired">0</div>
             </div>
-        </div>
+        </section>
 
-        <!-- Applications Table -->
-        <h2 class="section-title">Your Applications</h2>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Company</th>
-                        <th>Job Title</th>
-                        <th>Type</th>
-                        <th>Salary</th>
-                        <th>Applied Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="table">
-                    <tr><td colspan="6" style="text-align: center; padding: 40px;">Loading...</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+        <!-- Recent Applications Table -->
+        <section class="card">
+            <div class="card-header">
+                <h2>Recent Applications</h2>
+                <a href="tracker.html" class="link-action">View All Tracker →</a>
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Job Title</th>
+                            <th>Salary</th>
+                            <th>Applied Date</th>
+                            <th>Status</th>
+                            <th>Interview Round</th>
+                        </tr>
+                    </thead>
+                    <tbody id="applicationsTable">
+                        <tr>
+                            <td colspan="5" class="table-empty">Loading applications...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
 
-    <script>
-        const API = 'http://localhost:8000';
-        const user = JSON.parse(localStorage.getItem('user'));
-
-        if (!user) {
-            window.location.href = 'login.html';
-        }
-
-        document.getElementById('userGreeting').textContent = user.name;
-
-        // Load dashboard data
-        fetch(API + '/api/dashboard/' + user.user_id)
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('total').textContent = data.total_applications;
-                document.getElementById('applied').textContent = data.applied_count;
-                document.getElementById('interviewing').textContent = data.interviewing_count;
-                document.getElementById('rejected').textContent = data.rejected_count;
-            });
-
-        // Load applications
-        fetch(API + '/api/applications/' + user.user_id)
-            .then(res => res.json())
-            .then(apps => {
-                const tbody = document.getElementById('table');
-                
-                if (apps.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #6B7280;">No applications yet</td></tr>';
-                    return;
-                }
-
-                tbody.innerHTML = apps.map(app => `
-                    <tr>
-                        <td>${app.company}</td>
-                        <td>${app.title}</td>
-                        <td>${app.type}</td>
-                        <td>${app.salary}</td>
-                        <td>${app.date}</td>
-                        <td><span class="status ${app.status}">${app.status}</span></td>
-                    </tr>
-                `).join('');
-            });
-
-        function logout() {
-            localStorage.removeItem('user');
-            window.location.href = 'index.html';
-        }
-    </script>
+    <script src="navigation.js"></script>
+    <script src="dashboard.js"></script>
 </body>
+
 </html>

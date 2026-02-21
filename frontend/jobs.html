@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Jobs - Job Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="light-theme">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard.html" class="logo">JobTracker<span>.</span></a>
+            <div class="nav-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="jobs.html" class="active">Jobs</a>
+                <a href="tracker.html">Tracker</a>
+                <a href="profile.html">Profile</a>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar-overlay"></div>
+    <div class="mobile-sidebar">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="jobs.html">Jobs</a>
+        <a href="tracker.html">Tracker</a>
+        <a href="profile.html">Profile</a>
+        <button class="logout-btn" onclick="logout()" style="margin-top: 20px;">Logout</button>
+    </div>
+
+    <!-- Page Content -->
+    <main class="container" style="padding-top: 100px;">
+        <header class="page-header" style="padding: 20px 0;">
+            <div>
+                <h1>Browse Available Jobs</h1>
+                <p class="page-subtitle">Browse available positions and apply with ease.</p>
+            </div>
+        </header>
+
+        <div class="search-bar-container" style="margin-bottom: 30px; display: flex; justify-content: flex-start;">
+            <div class="search-bar" style="margin-bottom: 0; min-width: 400px; border: 1px solid var(--lt-border);">
+                <input type="text" id="jobSearch" placeholder="Search title or company..." onkeyup="filterJobs()">
+            </div>
+        </div>
+
+        <!-- Dual Pane Layout -->
+        <section class="dual-pane">
+            <!-- Left Pane: Job List -->
+            <div class="pane-left" id="jobsGrid">
+                <div class="loading-placeholder">
+                    <p class="page-subtitle">Loading jobs...</p>
+                </div>
+            </div>
+
+            <!-- Right Pane: Job Detail -->
+            <div class="pane-right" id="jobDetailPane">
+                <div class="loading-placeholder">
+                    <i class="fas fa-briefcase" style="font-size: 3rem; color: #e2e8f0; margin-bottom: 20px;"></i>
+                    <p class="page-subtitle">Select a job to view details</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- App Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal" style="max-width: 440px; text-align: center;">
+            <div class="contact-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981; margin-bottom: 24px;">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Did you apply?</h2>
+            <p class="page-subtitle" style="margin-bottom: 32px;">We'll only add this to your tracker if you've already
+                submitted your application on the external site.</p>
+
+            <div id="modalMessage" class="feedback-message" style="display: none;"></div>
+
+            <div class="modal-actions">
+                <button class="logout-btn" onclick="closeConfirmModal()">Not yet</button>
+                <button class="btn-primary" id="confirmYesBtn">Yes, track it!</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="navigation.js"></script>
+    <script src="jobs.js"></script>
+</body>
+
+</html>
