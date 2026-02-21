@@ -14,7 +14,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://job-tracker-yourname.netlify.app",  # ← your actual Netlify URL
+        "https://melodious-pithivier-e6df60.netlify.app/",  # ← your actual Netlify URL
         "http://localhost:5500",   # for local development
         "http://127.0.0.1:5500",  # for local development
     ],
