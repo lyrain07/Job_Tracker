@@ -13,7 +13,11 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # we'll restrict this after Netlify deploy
+    allow_origins=[
+        "https://job-tracker-yourname.netlify.app",  # ← your actual Netlify URL
+        "http://localhost:5500",   # for local development
+        "http://127.0.0.1:5500",  # for local development
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
