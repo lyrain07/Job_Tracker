@@ -1,7 +1,4 @@
-/**
- * JobTracker Shared Navigation Logic
- * Handles: Hamburger menu, sidebar, smooth scroll, and navbar scroll effects
- */
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const navbar = document.querySelector('.navbar');
@@ -10,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebarOverlay = document.querySelector('.sidebar-overlay');
     const body = document.body;
 
-    // 1. Navbar Scroll Effect (solid bg, no blur)
     const handleScroll = () => {
         if (window.scrollY > 50) {
             navbar.classList.add('scrolled');
@@ -19,9 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Run immediately on load
+    handleScroll();
 
-    // 2. Sidebar Toggle — must guard against null in case elements are not present
     const openSidebar = () => {
         mobileSidebar.classList.add('active');
         sidebarOverlay.classList.add('active');
@@ -53,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebarOverlay.addEventListener('click', closeSidebar);
     }
 
-    // Close sidebar when any sidebar link is clicked
     if (mobileSidebar) {
         mobileSidebar.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
@@ -62,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Smooth Scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             const href = this.getAttribute('href');
@@ -80,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 4. Active Link Highlighting (Based on current page filename)
     const currentPath = window.location.pathname.split('/').pop() || 'index.html';
     document.querySelectorAll('.nav-links a, .mobile-sidebar a').forEach(link => {
         const href = link.getAttribute('href');

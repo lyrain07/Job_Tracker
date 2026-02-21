@@ -5,7 +5,7 @@ if (!user) window.location.href = 'login.html';
 let allSkills = [];
 let userSkillIds = [];
 
-// ─── Load Profile ─────────────────────────────────────────────
+
 
 async function loadProfile() {
     try {
@@ -56,7 +56,7 @@ function renderProfileSkills(skills) {
     `).join('');
 }
 
-// ─── Edit Profile Modal ───────────────────────────────────────
+
 
 function openEditModal() {
     document.getElementById('editModal').classList.add('active');
@@ -94,7 +94,7 @@ async function saveProfile() {
     }
 }
 
-// ─── Skills Modal ─────────────────────────────────────────────
+
 
 async function openSkillsModal() {
     document.getElementById('skillsModal').classList.add('active');
@@ -120,7 +120,6 @@ function closeSkillsModal() {
     document.getElementById('skillDropdown').style.display = 'none';
 }
 
-// Renders the selected skill tags at the top of the modal
 function renderSelectedSkills() {
     const container = document.getElementById('selectedSkillsList');
     const selected = allSkills.filter(s => userSkillIds.includes(s.id));
@@ -136,7 +135,6 @@ function renderSelectedSkills() {
     `).join('');
 }
 
-// Renders the dropdown list filtered by search
 function renderSkillDropdown(query) {
     const dropdown = document.getElementById('skillDropdown');
     const filtered = allSkills.filter(s =>
@@ -170,7 +168,6 @@ function addSkill(skillId) {
 function removeSkill(skillId) {
     userSkillIds = userSkillIds.filter(id => id !== skillId);
     renderSelectedSkills();
-    // Re-render dropdown if search is active
     const q = document.getElementById('skillSearchInput').value;
     if (q) renderSkillDropdown(q);
 }
@@ -200,7 +197,7 @@ async function saveSkills() {
     }
 }
 
-// ─── Helpers ──────────────────────────────────────────────────
+
 
 function showProfileMessage(msg, type) {
     const el = document.getElementById('profileMessage');

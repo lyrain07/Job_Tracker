@@ -1,13 +1,13 @@
---
--- PostgreSQL database dump
---
+
+
+
 
 \restrict dQACNCPoTZs2JePmc3d5PrMo8Dytre9dYvpMXHEWJWMLFF2PbVHdu7jYDwxaH7e
 
--- Dumped from database version 18.1
--- Dumped by pg_dump version 18.1
 
--- Started on 2026-02-21 13:20:31
+
+
+
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -25,10 +25,10 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
---
--- TOC entry 226 (class 1259 OID 17996)
--- Name: applications; Type: TABLE; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE TABLE public.applications (
     application_id integer NOT NULL,
@@ -43,10 +43,10 @@ CREATE TABLE public.applications (
 
 ALTER TABLE public.applications OWNER TO postgres;
 
---
--- TOC entry 222 (class 1259 OID 17966)
--- Name: companies; Type: TABLE; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE TABLE public.companies (
     company_id integer NOT NULL,
@@ -58,10 +58,10 @@ CREATE TABLE public.companies (
 
 ALTER TABLE public.companies OWNER TO postgres;
 
---
--- TOC entry 224 (class 1259 OID 17977)
--- Name: jobs; Type: TABLE; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE TABLE public.jobs (
     job_id integer NOT NULL,
@@ -77,10 +77,10 @@ CREATE TABLE public.jobs (
 
 ALTER TABLE public.jobs OWNER TO postgres;
 
---
--- TOC entry 220 (class 1259 OID 17950)
--- Name: users; Type: TABLE; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE TABLE public.users (
     user_id integer NOT NULL,
@@ -95,10 +95,10 @@ CREATE TABLE public.users (
 
 ALTER TABLE public.users OWNER TO postgres;
 
---
--- TOC entry 232 (class 1259 OID 18072)
--- Name: application_details; Type: VIEW; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE VIEW public.application_details AS
  SELECT a.application_id,
@@ -118,10 +118,10 @@ CREATE VIEW public.application_details AS
 
 ALTER VIEW public.application_details OWNER TO postgres;
 
---
--- TOC entry 225 (class 1259 OID 17995)
--- Name: applications_application_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE SEQUENCE public.applications_application_id_seq
     AS integer
@@ -134,19 +134,19 @@ CREATE SEQUENCE public.applications_application_id_seq
 
 ALTER SEQUENCE public.applications_application_id_seq OWNER TO postgres;
 
---
--- TOC entry 5123 (class 0 OID 0)
--- Dependencies: 225
--- Name: applications_application_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 ALTER SEQUENCE public.applications_application_id_seq OWNED BY public.applications.application_id;
 
 
---
--- TOC entry 221 (class 1259 OID 17965)
--- Name: companies_company_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE SEQUENCE public.companies_company_id_seq
     AS integer
@@ -159,19 +159,19 @@ CREATE SEQUENCE public.companies_company_id_seq
 
 ALTER SEQUENCE public.companies_company_id_seq OWNER TO postgres;
 
---
--- TOC entry 5124 (class 0 OID 0)
--- Dependencies: 221
--- Name: companies_company_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 ALTER SEQUENCE public.companies_company_id_seq OWNED BY public.companies.company_id;
 
 
---
--- TOC entry 228 (class 1259 OID 18023)
--- Name: interviews; Type: TABLE; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE TABLE public.interviews (
     interview_id integer NOT NULL,
@@ -187,10 +187,10 @@ CREATE TABLE public.interviews (
 
 ALTER TABLE public.interviews OWNER TO postgres;
 
---
--- TOC entry 233 (class 1259 OID 18077)
--- Name: interview_details; Type: VIEW; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE VIEW public.interview_details AS
  SELECT a.application_id,
@@ -215,10 +215,10 @@ CREATE VIEW public.interview_details AS
 
 ALTER VIEW public.interview_details OWNER TO postgres;
 
---
--- TOC entry 227 (class 1259 OID 18022)
--- Name: interviews_interview_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE SEQUENCE public.interviews_interview_id_seq
     AS integer
@@ -231,19 +231,19 @@ CREATE SEQUENCE public.interviews_interview_id_seq
 
 ALTER SEQUENCE public.interviews_interview_id_seq OWNER TO postgres;
 
---
--- TOC entry 5125 (class 0 OID 0)
--- Dependencies: 227
--- Name: interviews_interview_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 ALTER SEQUENCE public.interviews_interview_id_seq OWNED BY public.interviews.interview_id;
 
 
---
--- TOC entry 223 (class 1259 OID 17976)
--- Name: jobs_job_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE SEQUENCE public.jobs_job_id_seq
     AS integer
@@ -256,19 +256,19 @@ CREATE SEQUENCE public.jobs_job_id_seq
 
 ALTER SEQUENCE public.jobs_job_id_seq OWNER TO postgres;
 
---
--- TOC entry 5126 (class 0 OID 0)
--- Dependencies: 223
--- Name: jobs_job_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 ALTER SEQUENCE public.jobs_job_id_seq OWNED BY public.jobs.job_id;
 
 
---
--- TOC entry 230 (class 1259 OID 18042)
--- Name: skills; Type: TABLE; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE TABLE public.skills (
     skill_id integer NOT NULL,
@@ -278,10 +278,10 @@ CREATE TABLE public.skills (
 
 ALTER TABLE public.skills OWNER TO postgres;
 
---
--- TOC entry 229 (class 1259 OID 18041)
--- Name: skills_skill_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE SEQUENCE public.skills_skill_id_seq
     AS integer
@@ -294,19 +294,19 @@ CREATE SEQUENCE public.skills_skill_id_seq
 
 ALTER SEQUENCE public.skills_skill_id_seq OWNER TO postgres;
 
---
--- TOC entry 5127 (class 0 OID 0)
--- Dependencies: 229
--- Name: skills_skill_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 ALTER SEQUENCE public.skills_skill_id_seq OWNED BY public.skills.skill_id;
 
 
---
--- TOC entry 236 (class 1259 OID 18092)
--- Name: upcoming_interviews; Type: VIEW; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE VIEW public.upcoming_interviews AS
  SELECT u.user_id,
@@ -329,10 +329,10 @@ CREATE VIEW public.upcoming_interviews AS
 
 ALTER VIEW public.upcoming_interviews OWNER TO postgres;
 
---
--- TOC entry 237 (class 1259 OID 18097)
--- Name: user_dashboard; Type: VIEW; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE VIEW public.user_dashboard AS
  SELECT u.user_id,
@@ -377,10 +377,10 @@ CREATE VIEW public.user_dashboard AS
 
 ALTER VIEW public.user_dashboard OWNER TO postgres;
 
---
--- TOC entry 234 (class 1259 OID 18082)
--- Name: user_profile; Type: VIEW; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE VIEW public.user_profile AS
  SELECT u.user_id,
@@ -400,10 +400,10 @@ CREATE VIEW public.user_profile AS
 
 ALTER VIEW public.user_profile OWNER TO postgres;
 
---
--- TOC entry 235 (class 1259 OID 18087)
--- Name: user_profile_full; Type: VIEW; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE VIEW public.user_profile_full AS
  SELECT u.user_id,
@@ -428,10 +428,10 @@ CREATE VIEW public.user_profile_full AS
 
 ALTER VIEW public.user_profile_full OWNER TO postgres;
 
---
--- TOC entry 231 (class 1259 OID 18052)
--- Name: user_skills; Type: TABLE; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE TABLE public.user_skills (
     user_id integer NOT NULL,
@@ -441,10 +441,10 @@ CREATE TABLE public.user_skills (
 
 ALTER TABLE public.user_skills OWNER TO postgres;
 
---
--- TOC entry 219 (class 1259 OID 17949)
--- Name: users_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE SEQUENCE public.users_user_id_seq
     AS integer
@@ -457,68 +457,68 @@ CREATE SEQUENCE public.users_user_id_seq
 
 ALTER SEQUENCE public.users_user_id_seq OWNER TO postgres;
 
---
--- TOC entry 5128 (class 0 OID 0)
--- Dependencies: 219
--- Name: users_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 ALTER SEQUENCE public.users_user_id_seq OWNED BY public.users.user_id;
 
 
---
--- TOC entry 4914 (class 2604 OID 17999)
--- Name: applications application_id; Type: DEFAULT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.applications ALTER COLUMN application_id SET DEFAULT nextval('public.applications_application_id_seq'::regclass);
 
 
---
--- TOC entry 4911 (class 2604 OID 17969)
--- Name: companies company_id; Type: DEFAULT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.companies ALTER COLUMN company_id SET DEFAULT nextval('public.companies_company_id_seq'::regclass);
 
 
---
--- TOC entry 4917 (class 2604 OID 18026)
--- Name: interviews interview_id; Type: DEFAULT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.interviews ALTER COLUMN interview_id SET DEFAULT nextval('public.interviews_interview_id_seq'::regclass);
 
 
---
--- TOC entry 4912 (class 2604 OID 17980)
--- Name: jobs job_id; Type: DEFAULT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.jobs ALTER COLUMN job_id SET DEFAULT nextval('public.jobs_job_id_seq'::regclass);
 
 
---
--- TOC entry 4919 (class 2604 OID 18045)
--- Name: skills skill_id; Type: DEFAULT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.skills ALTER COLUMN skill_id SET DEFAULT nextval('public.skills_skill_id_seq'::regclass);
 
 
---
--- TOC entry 4909 (class 2604 OID 17953)
--- Name: users user_id; Type: DEFAULT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.users ALTER COLUMN user_id SET DEFAULT nextval('public.users_user_id_seq'::regclass);
 
 
---
--- TOC entry 5112 (class 0 OID 17996)
--- Dependencies: 226
--- Data for Name: applications; Type: TABLE DATA; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 COPY public.applications (application_id, user_id, job_id, applied_date, status, notes) FROM stdin;
 1	1	1	2025-01-15 00:00:00	Applied	Submitted resume and cover letter
@@ -529,11 +529,11 @@ COPY public.applications (application_id, user_id, job_id, applied_date, status,
 \.
 
 
---
--- TOC entry 5108 (class 0 OID 17966)
--- Dependencies: 222
--- Data for Name: companies; Type: TABLE DATA; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 COPY public.companies (company_id, company_name, location, website) FROM stdin;
 1	Google	Mountain View, CA	https://google.com
@@ -552,11 +552,11 @@ COPY public.companies (company_id, company_name, location, website) FROM stdin;
 \.
 
 
---
--- TOC entry 5114 (class 0 OID 18023)
--- Dependencies: 228
--- Data for Name: interviews; Type: TABLE DATA; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 COPY public.interviews (interview_id, application_id, round, interview_date, mode, remarks, result) FROM stdin;
 1	1	1	2025-01-17	Online	Initial HR screening	Passed
@@ -567,11 +567,11 @@ COPY public.interviews (interview_id, application_id, round, interview_date, mod
 \.
 
 
---
--- TOC entry 5110 (class 0 OID 17977)
--- Dependencies: 224
--- Data for Name: jobs; Type: TABLE DATA; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 COPY public.jobs (job_id, company_id, title, description, job_type, salary_range, posted_date) FROM stdin;
 1	1	Software Engineer	We are seeking a passionate Software Engineer to design, develop, and maintain scalable web applications that power critical business operations. In this role, you will collaborate with cross-functional teams to build reliable backend services, optimize system performance, and implement secure RESTful APIs. The ideal candidate has strong knowledge of data structures and algorithms, hands-on experience with backend frameworks, and familiarity with relational databases such as PostgreSQL. You should be comfortable working in an agile development environment, writing clean and testable code, and participating in code reviews. Experience with cloud platforms, CI/CD pipelines, and version control systems like Git is highly valued. This position offers opportunities to work on impactful projects and grow into a senior technical role.	Full-time	$100k-$150k	2026-02-21 13:02:13.226149
@@ -603,11 +603,11 @@ COPY public.jobs (job_id, company_id, title, description, job_type, salary_range
 \.
 
 
---
--- TOC entry 5116 (class 0 OID 18042)
--- Dependencies: 230
--- Data for Name: skills; Type: TABLE DATA; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 COPY public.skills (skill_id, skill_name) FROM stdin;
 1	Java
@@ -671,11 +671,11 @@ COPY public.skills (skill_id, skill_name) FROM stdin;
 \.
 
 
---
--- TOC entry 5117 (class 0 OID 18052)
--- Dependencies: 231
--- Data for Name: user_skills; Type: TABLE DATA; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 COPY public.user_skills (user_id, skill_id) FROM stdin;
 1	1
@@ -691,11 +691,11 @@ COPY public.user_skills (user_id, skill_id) FROM stdin;
 \.
 
 
---
--- TOC entry 5106 (class 0 OID 17950)
--- Dependencies: 220
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 COPY public.users (user_id, name, email, password_hash, bio, resume_url, created_at) FROM stdin;
 1	John Doe	john@example.com	$2b$12$KIXQnZy...	Passionate software engineer with a love for building scalable systems.	\N	2026-02-21 13:02:13.226149
@@ -704,233 +704,233 @@ COPY public.users (user_id, name, email, password_hash, bio, resume_url, created
 \.
 
 
---
--- TOC entry 5129 (class 0 OID 0)
--- Dependencies: 225
--- Name: applications_application_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 SELECT pg_catalog.setval('public.applications_application_id_seq', 5, true);
 
 
---
--- TOC entry 5130 (class 0 OID 0)
--- Dependencies: 221
--- Name: companies_company_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 SELECT pg_catalog.setval('public.companies_company_id_seq', 13, true);
 
 
---
--- TOC entry 5131 (class 0 OID 0)
--- Dependencies: 227
--- Name: interviews_interview_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 SELECT pg_catalog.setval('public.interviews_interview_id_seq', 5, true);
 
 
---
--- TOC entry 5132 (class 0 OID 0)
--- Dependencies: 223
--- Name: jobs_job_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 SELECT pg_catalog.setval('public.jobs_job_id_seq', 26, true);
 
 
---
--- TOC entry 5133 (class 0 OID 0)
--- Dependencies: 229
--- Name: skills_skill_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 SELECT pg_catalog.setval('public.skills_skill_id_seq', 58, true);
 
 
---
--- TOC entry 5134 (class 0 OID 0)
--- Dependencies: 219
--- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
+
+
+
+
+
 
 SELECT pg_catalog.setval('public.users_user_id_seq', 3, true);
 
 
---
--- TOC entry 4932 (class 2606 OID 18009)
--- Name: applications applications_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.applications
     ADD CONSTRAINT applications_pkey PRIMARY KEY (application_id);
 
 
---
--- TOC entry 4934 (class 2606 OID 18011)
--- Name: applications applications_user_id_job_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.applications
     ADD CONSTRAINT applications_user_id_job_id_key UNIQUE (user_id, job_id);
 
 
---
--- TOC entry 4928 (class 2606 OID 17975)
--- Name: companies companies_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.companies
     ADD CONSTRAINT companies_pkey PRIMARY KEY (company_id);
 
 
---
--- TOC entry 4939 (class 2606 OID 18035)
--- Name: interviews interviews_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.interviews
     ADD CONSTRAINT interviews_pkey PRIMARY KEY (interview_id);
 
 
---
--- TOC entry 4930 (class 2606 OID 17989)
--- Name: jobs jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.jobs
     ADD CONSTRAINT jobs_pkey PRIMARY KEY (job_id);
 
 
---
--- TOC entry 4941 (class 2606 OID 18049)
--- Name: skills skills_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.skills
     ADD CONSTRAINT skills_pkey PRIMARY KEY (skill_id);
 
 
---
--- TOC entry 4943 (class 2606 OID 18051)
--- Name: skills skills_skill_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.skills
     ADD CONSTRAINT skills_skill_name_key UNIQUE (skill_name);
 
 
---
--- TOC entry 4945 (class 2606 OID 18058)
--- Name: user_skills user_skills_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.user_skills
     ADD CONSTRAINT user_skills_pkey PRIMARY KEY (user_id, skill_id);
 
 
---
--- TOC entry 4924 (class 2606 OID 17964)
--- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_email_key UNIQUE (email);
 
 
---
--- TOC entry 4926 (class 2606 OID 17962)
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (user_id);
 
 
---
--- TOC entry 4935 (class 1259 OID 18070)
--- Name: idx_applications_job; Type: INDEX; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE INDEX idx_applications_job ON public.applications USING btree (job_id);
 
 
---
--- TOC entry 4936 (class 1259 OID 18069)
--- Name: idx_applications_user; Type: INDEX; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE INDEX idx_applications_user ON public.applications USING btree (user_id);
 
 
---
--- TOC entry 4937 (class 1259 OID 18071)
--- Name: idx_interviews_application; Type: INDEX; Schema: public; Owner: postgres
---
+
+
+
+
 
 CREATE INDEX idx_interviews_application ON public.interviews USING btree (application_id);
 
 
---
--- TOC entry 4947 (class 2606 OID 18017)
--- Name: applications applications_job_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.applications
     ADD CONSTRAINT applications_job_id_fkey FOREIGN KEY (job_id) REFERENCES public.jobs(job_id) ON DELETE CASCADE;
 
 
---
--- TOC entry 4948 (class 2606 OID 18012)
--- Name: applications applications_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.applications
     ADD CONSTRAINT applications_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
 
 
---
--- TOC entry 4949 (class 2606 OID 18036)
--- Name: interviews interviews_application_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.interviews
     ADD CONSTRAINT interviews_application_id_fkey FOREIGN KEY (application_id) REFERENCES public.applications(application_id) ON DELETE CASCADE;
 
 
---
--- TOC entry 4946 (class 2606 OID 17990)
--- Name: jobs jobs_company_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.jobs
     ADD CONSTRAINT jobs_company_id_fkey FOREIGN KEY (company_id) REFERENCES public.companies(company_id) ON DELETE CASCADE;
 
 
---
--- TOC entry 4950 (class 2606 OID 18064)
--- Name: user_skills user_skills_skill_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.user_skills
     ADD CONSTRAINT user_skills_skill_id_fkey FOREIGN KEY (skill_id) REFERENCES public.skills(skill_id) ON DELETE CASCADE;
 
 
---
--- TOC entry 4951 (class 2606 OID 18059)
--- Name: user_skills user_skills_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
+
 
 ALTER TABLE ONLY public.user_skills
     ADD CONSTRAINT user_skills_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
 
 
--- Completed on 2026-02-21 13:20:32
 
---
--- PostgreSQL database dump complete
---
+
+
+
+
 
 \unrestrict dQACNCPoTZs2JePmc3d5PrMo8Dytre9dYvpMXHEWJWMLFF2PbVHdu7jYDwxaH7e
 

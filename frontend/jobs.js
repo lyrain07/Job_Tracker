@@ -37,7 +37,6 @@ async function loadJobs() {
         populateLocationFilter(jobs);
         renderJobList(jobs);
 
-        // Auto-select first job
         if (jobs.length > 0) {
             const firstItem = document.querySelector('.job-list-item');
             selectJob(jobs[0], firstItem);
@@ -107,9 +106,9 @@ function renderJobList(jobs) {
             <div class="job-item-title">${escHtml(job.title)}</div>
             <div class="job-item-company">${escHtml(job.company)}</div>
             <div class="job-item-tags">
-                ${job.type ? `<span class="job-item-tag">💼 ${escHtml(job.type)}</span>` : ''}
-                ${job.location ? `<span class="job-item-tag">📍 ${escHtml(job.location)}</span>` : ''}
-                ${job.salary ? `<span class="job-item-tag">💰 ${escHtml(job.salary)}</span>` : ''}
+                ${job.type ? `<span class="job-item-tag">${escHtml(job.type)}</span>` : ''}
+                ${job.location ? `<span class="job-item-tag">${escHtml(job.location)}</span>` : ''}
+                ${job.salary ? `<span class="job-item-tag">${escHtml(job.salary)}</span>` : ''}
                 ${isApplied ? `<span class="job-item-tag" style="background:#ecfdf5;color:#059669;">✓ Applied</span>` : ''}
             </div>`;
 
@@ -130,7 +129,6 @@ function renderJobDetail(job) {
     const detail = document.getElementById('jobDetail');
 
     detail.innerHTML = `
-        <!-- ACTION BAR — pinned at top -->
         <div class="detail-action-bar">
             ${job.application_link ? `
             <a href="${escAttr(job.application_link)}" target="_blank" rel="noopener noreferrer" class="btn-ext-link">
@@ -143,11 +141,10 @@ function renderJobDetail(job) {
                 ${isApplied ? 'disabled' : ''}>
                 ${isApplied
             ? '<i class="fas fa-check"></i> Already Tracked'
-            : '<i class="fas fa-bookmark"></i> Track Application'}
+            : '<i class="fas fa-bookmark"></i> Apply'}
             </button>
         </div>
 
-        <!-- SCROLLABLE description area -->
         <div class="detail-scroll-area">
             <div class="job-detail-title">${escHtml(job.title)}</div>
             <div class="job-detail-company">${escHtml(job.company)}</div>

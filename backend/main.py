@@ -127,7 +127,6 @@ def get_dashboard(user_id: int):
         cur.close()
         conn.close()
 
-# ── IMPORTANT: specific /api/jobs/* routes MUST come before the generic /api/jobs route ──
 
 @app.get("/api/jobs/popular")
 def get_popular_jobs():

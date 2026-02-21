@@ -1,15 +1,13 @@
 const API = 'http://127.0.0.1:8000';
 
-// Get the logged-in user; redirect if not authenticated
 const user = JSON.parse(localStorage.getItem('user'));
 if (!user) window.location.href = 'login.html';
 
-// Display first name in the greeting
 if (document.getElementById('userGreeting')) {
     document.getElementById('userGreeting').textContent = user.name.split(' ')[0];
 }
 
-// ─── Stats ────────────────────────────────────────────────────
+
 
 async function loadStats() {
     try {
@@ -39,7 +37,6 @@ async function loadRecentApplications() {
             return;
         }
 
-        // Show only the 5 most recent applications on the dashboard
         const recentApps = apps.slice(0, 5);
         tbody.innerHTML = recentApps.map(app => `
             <tr>

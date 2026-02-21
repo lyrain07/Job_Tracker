@@ -1,6 +1,6 @@
 const API = 'http://127.0.0.1:8000';
 
-// ─── Page switching ───────────────────────────────────────────
+
 
 function showLoginPage() {
     document.getElementById('loginForm').style.display = 'block';
@@ -16,7 +16,7 @@ function showRegisterPage() {
     hideMessage();
 }
 
-// ─── Feedback message helpers ─────────────────────────────────
+
 
 function showMessage(text, type) {
     const el = document.getElementById('message');
@@ -30,7 +30,7 @@ function hideMessage() {
     document.getElementById('message').style.display = 'none';
 }
 
-// ─── Registration ─────────────────────────────────────────────
+
 
 async function register() {
     const name = document.getElementById('registerName').value;
@@ -61,7 +61,7 @@ async function register() {
     }
 }
 
-// ─── Login ────────────────────────────────────────────────────
+
 
 async function login() {
     const email = document.getElementById('loginEmail').value;
