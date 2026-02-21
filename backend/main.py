@@ -53,6 +53,7 @@ class SkillUpdate(BaseModel):
 class ApplicationUpdate(BaseModel):
     status: str
     notes: Optional[str] = None
+    interview_round: Optional[int] = None
 
 def hash_password(password: str):
     return hashlib.sha256(password.encode()).hexdigest()
@@ -268,14 +269,36 @@ def update_application(application_id: int, request: ApplicationUpdate):
     conn = get_connection()
     cur = conn.cursor()
     try:
+        # Update application status and notes
         cur.execute(
             "UPDATE applications SET status = %s, notes = %s WHERE application_id = %s",
             (request.status, request.notes, application_id)
         )
         if cur.rowcount == 0:
             raise HTTPException(status_code=404, detail="Application not found")
+
+        # Handle interview round if status is 'Interviewing'
+        if request.status == 'Interviewing' and request.interview_round is not None:
+            # Check if an interview record already exists for this application
+            cur.execute("SELECT interview_id FROM interviews WHERE application_id = %s", (application_id,))
+            existing_interview = cur.fetchone()
+            
+            if existing_interview:
+                cur.execute(
+                    "UPDATE interviews SET round = %s WHERE application_id = %s",
+                    (request.interview_round, application_id)
+                )
+            else:
+                cur.execute(
+                    "INSERT INTO interviews (application_id, round, result) VALUES (%s, %s, 'Pending')",
+                    (application_id, request.interview_round)
+                )
+
         conn.commit()
         return {"message": "Application updated"}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
     finally:
         cur.close()
         conn.close()

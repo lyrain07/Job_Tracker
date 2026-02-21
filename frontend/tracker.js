@@ -35,6 +35,9 @@ function renderTable() {
             <td>${new Date(app.date).toLocaleDateString()}</td>
             <td><span class="status-badge status-${app.status}">${app.status}</span></td>
             <td><span style="font-size:0.85rem; font-weight:600; color:#6366f1;">${app.interview_round && app.interview_round > 0 ? 'Round ' + app.interview_round : 'None'}</span></td>
+            <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--lt-text-muted); font-size: 0.85rem;">
+                ${app.notes || '-'}
+            </td>
             <td class="edit-col" style="display:${editMode ? 'table-cell' : 'none'};">
                 <button onclick="event.stopPropagation(); deleteApplication(${app.application_id})"
                     style="background:none; border:1px solid #fecaca; color:#dc2626; padding:4px 12px; border-radius:8px; cursor:pointer; font-size:0.8rem; font-weight:600;">
@@ -81,12 +84,28 @@ async function deleteApplication(applicationId) {
     }
 }
 
+let currentAppId = null;
+
+function toggleRoundInput() {
+    const status = document.getElementById('updateStatus').value;
+    const roundGroup = document.getElementById('roundInputGroup');
+    roundGroup.style.display = (status === 'Interviewing') ? 'block' : 'none';
+}
+
 function openDetailModal(index) {
     const app = applications[index];
     if (!app) return;
 
+    currentAppId = app.application_id;
     document.getElementById('detailTitle').textContent = app.title;
     document.getElementById('detailCompany').textContent = app.company;
+
+    // Populate Status and Round
+    document.getElementById('updateStatus').value = app.status;
+    if (app.interview_round) {
+        document.getElementById('updateRound').value = app.interview_round;
+    }
+    toggleRoundInput();
 
     document.getElementById('detailMeta').innerHTML = `
         <span class="meta-tag">💼 ${app.type || 'N/A'}</span>
@@ -94,13 +113,50 @@ function openDetailModal(index) {
         <span class="meta-tag">📅 Applied: ${new Date(app.date).toLocaleDateString()}</span>
         <span class="meta-tag"><span class="status-badge status-${app.status}">${app.status}</span></span>
         ${app.interview_round && app.interview_round > 0 ? `<span class="meta-tag">🎯 Interview Round: ${app.interview_round}</span>` : ''}
-        ${app.interview_mode ? `<span class="meta-tag">📞 Mode: ${app.interview_mode}</span>` : ''}
-        ${app.interview_date ? `<span class="meta-tag">🗓 Date: ${new Date(app.interview_date).toLocaleDateString()}</span>` : ''}
-        ${app.interview_result ? `<span class="meta-tag">✅ Result: ${app.interview_result}</span>` : ''}
     `;
 
-    document.getElementById('detailNotes').textContent = app.notes || 'No notes added for this application.';
+    document.getElementById('displayNotes').textContent = app.notes || 'No notes added for this application.';
+    document.getElementById('detailNotes').value = app.notes || '';
     document.getElementById('detailModal').classList.add('active');
+}
+
+async function saveApplicationDetails() {
+    if (!currentAppId) return;
+
+    const status = document.getElementById('updateStatus').value;
+    const round = status === 'Interviewing' ? parseInt(document.getElementById('updateRound').value) : null;
+    const notes = document.getElementById('detailNotes').value;
+
+    const btn = document.getElementById('saveTrackerBtn');
+    const originalText = btn.textContent;
+    btn.textContent = 'Saving...';
+    btn.disabled = true;
+
+    try {
+        const res = await fetch(`${API}/api/applications/${currentAppId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                status: status,
+                notes: notes === 'No notes added for this application.' ? '' : notes,
+                interview_round: round
+            })
+        });
+
+        if (res.ok) {
+            closeDetailModal();
+            loadTracker(); // Refresh table
+        } else {
+            const err = await res.json();
+            alert(err.detail || 'Failed to update application.');
+        }
+    } catch (err) {
+        console.error('Save error:', err);
+        alert('Connection error. Please try again.');
+    } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }
 }
 
 function closeDetailModal() {
