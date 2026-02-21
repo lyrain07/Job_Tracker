@@ -1,23 +1,29 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import List, Optional
 from backend.database import get_connection
 import hashlib
+import os
+import uuid
 from datetime import datetime
 
 app = FastAPI()
 
-# Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001", "http://127.0.0.1:3000", "http://127.0.0.1:3001"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --- Pydantic Models ---
+UPLOAD_DIR = "backend/uploads"
+if not os.path.exists(UPLOAD_DIR):
+    os.makedirs(UPLOAD_DIR)
+
+app.mount("/api/resumes", StaticFiles(directory=UPLOAD_DIR), name="resumes")
 
 class RegisterRequest(BaseModel):
     name: str
@@ -48,18 +54,12 @@ class ApplicationUpdate(BaseModel):
     status: str
     notes: Optional[str] = None
 
-# --- Helper Functions ---
-
 def hash_password(password: str):
     return hashlib.sha256(password.encode()).hexdigest()
-
-# --- Endpoints ---
 
 @app.get("/")
 def home():
     return {"message": "Job Tracker API is running"}
-
-# --- Auth ---
 
 @app.post("/api/register")
 def register(request: RegisterRequest):
@@ -105,8 +105,6 @@ def login(request: LoginRequest):
         cur.close()
         conn.close()
 
-# --- Dashboard ---
-
 @app.get("/api/dashboard/{user_id}")
 def get_dashboard(user_id: int):
     conn = get_connection()
@@ -129,38 +127,7 @@ def get_dashboard(user_id: int):
         cur.close()
         conn.close()
 
-# --- Jobs ---
-
-@app.get("/api/jobs")
-def get_jobs(search: Optional[str] = None):
-    conn = get_connection()
-    cur = conn.cursor()
-    try:
-        query = """
-            SELECT j.job_id, j.title, j.job_type, j.salary_range, c.company_name, c.location, j.description, j.application_link
-            FROM jobs j
-            JOIN companies c ON j.company_id = c.company_id
-        """
-        if search:
-            query += " WHERE j.title ILIKE %s OR c.company_name ILIKE %s"
-            cur.execute(query, (f"%{search}%", f"%{search}%"))
-        else:
-            cur.execute(query)
-        
-        jobs = cur.fetchall()
-        return [{
-            "job_id": row[0],
-            "title": row[1],
-            "type": row[2],
-            "salary": row[3],
-            "company": row[4],
-            "location": row[5],
-            "description": row[6],
-            "application_link": row[7]
-        } for row in jobs]
-    finally:
-        cur.close()
-        conn.close()
+# ── IMPORTANT: specific /api/jobs/* routes MUST come before the generic /api/jobs route ──
 
 @app.get("/api/jobs/popular")
 def get_popular_jobs():
@@ -213,7 +180,36 @@ def apply_job(request: ApplyRequest):
         cur.close()
         conn.close()
 
-# --- Applications (Tracker) ---
+@app.get("/api/jobs")
+def get_jobs(search: Optional[str] = None):
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        query = """
+            SELECT j.job_id, j.title, j.job_type, j.salary_range, c.company_name, c.location, j.description, j.application_link
+            FROM jobs j
+            JOIN companies c ON j.company_id = c.company_id
+        """
+        if search:
+            query += " WHERE j.title ILIKE %s OR c.company_name ILIKE %s"
+            cur.execute(query, (f"%{search}%", f"%{search}%"))
+        else:
+            cur.execute(query)
+        
+        jobs = cur.fetchall()
+        return [{
+            "job_id": row[0],
+            "title": row[1],
+            "type": row[2],
+            "salary": row[3],
+            "company": row[4],
+            "location": row[5],
+            "description": row[6],
+            "application_link": row[7]
+        } for row in jobs]
+    finally:
+        cur.close()
+        conn.close()
 
 @app.get("/api/applications/{user_id}")
 def get_applications(user_id: int):
@@ -277,6 +273,8 @@ def update_application(application_id: int, request: ApplicationUpdate):
             "UPDATE applications SET status = %s, notes = %s WHERE application_id = %s",
             (request.status, request.notes, application_id)
         )
+        if cur.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Application not found")
         conn.commit()
         return {"message": "Application updated"}
     finally:
@@ -289,13 +287,13 @@ def delete_application(application_id: int):
     cur = conn.cursor()
     try:
         cur.execute("DELETE FROM applications WHERE application_id = %s", (application_id,))
+        if cur.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Application not found")
         conn.commit()
         return {"message": "Application deleted"}
     finally:
         cur.close()
         conn.close()
-
-# --- Profile & Skills ---
 
 @app.get("/api/profile/{user_id}")
 def get_profile(user_id: int):
@@ -344,6 +342,15 @@ def update_profile(user_id: int, request: ProfileUpdate):
         cur.close()
         conn.close()
 
+@app.post("/api/upload-resume")
+async def upload_resume(file: UploadFile = File(...)):
+    ext = os.path.splitext(file.filename)[1]
+    filename = f"{uuid.uuid4()}{ext}"
+    filepath = os.path.join(UPLOAD_DIR, filename)
+    with open(filepath, "wb") as f:
+        f.write(await file.read())
+    return {"resume_url": f"http://127.0.0.1:8000/api/resumes/{filename}"}
+
 @app.get("/api/skills")
 def get_all_skills():
     conn = get_connection()
@@ -360,11 +367,9 @@ def update_user_skills(user_id: int, request: SkillUpdate):
     conn = get_connection()
     cur = conn.cursor()
     try:
-        # Delete existing skills for user
         cur.execute("DELETE FROM user_skills WHERE user_id = %s", (user_id,))
         
         for name in request.skill_names:
-            # 1. Ensure skill exists in global skills table
             cur.execute("INSERT INTO skills (skill_name) VALUES (%s) ON CONFLICT (skill_name) DO NOTHING RETURNING skill_id", (name,))
             res = cur.fetchone()
             if res:
@@ -373,7 +378,6 @@ def update_user_skills(user_id: int, request: SkillUpdate):
                 cur.execute("SELECT skill_id FROM skills WHERE skill_name = %s", (name,))
                 skill_id = cur.fetchone()[0]
             
-            # 2. Link skill to user
             cur.execute("INSERT INTO user_skills (user_id, skill_id) VALUES (%s, %s)", (user_id, skill_id))
             
         conn.commit()

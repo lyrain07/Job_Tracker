@@ -3,116 +3,108 @@ const user = JSON.parse(localStorage.getItem('user'));
 if (!user) window.location.href = 'login.html';
 
 let applications = [];
-let isEditMode = false;
+let editMode = false;
 
 async function loadTracker() {
+    const tbody = document.getElementById('trackerBody');
     try {
         const res = await fetch(`${API}/api/applications/${user.user_id}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         applications = await res.json();
-        renderTracker();
-    } catch {
-        const body = document.getElementById('trackerBody');
-        body.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 40px;">Failed to load data.</td></tr>';
+
+        if (applications.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="table-empty">No applications yet. Go to <a href="jobs.html" style="color:#6366F1;">Jobs</a> to start applying!</td></tr>';
+            return;
+        }
+
+        renderTable();
+    } catch (err) {
+        console.error('Tracker load error:', err);
+        tbody.innerHTML = `<tr><td colspan="7" class="table-empty" style="color:#F87171;">Failed to load applications. Is the backend running at ${API}?</td></tr>`;
     }
 }
 
-function renderTracker() {
-    const body = document.getElementById('trackerBody');
-    if (applications.length === 0) {
-        body.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 40px;">No applications yet. Browse jobs to get started!</td></tr>';
-        return;
-    }
+function renderTable() {
+    const tbody = document.getElementById('trackerBody');
 
-    body.innerHTML = applications.map(app => `
-        <tr>
+    tbody.innerHTML = applications.map((app, i) => `
+        <tr style="cursor:pointer;" onclick="openDetailModal(${i})">
             <td><strong>${app.company}</strong></td>
-            <td>
-                <a href="#" class="job-title-link" onclick="showJobDetails(${app.application_id})">${app.title}</a>
-            </td>
-            <td><span class="meta-tag"><i class="fas fa-money-bill-wave" style="margin-right: 6px; color: #10b981;"></i>${app.salary || 'N/A'}</span></td>
+            <td>${app.title}</td>
+            <td><span class="meta-tag" style="background:#ecfdf5; color:#065f46; font-weight:600;">${app.salary || 'N/A'}</span></td>
             <td>${new Date(app.date).toLocaleDateString()}</td>
             <td><span class="status-badge status-${app.status}">${app.status}</span></td>
-            <td>${renderInterviewBadge(app)}</td>
-            <td class="edit-col" style="${isEditMode ? 'display: table-cell;' : 'display: none;'}">
-                <button class="logout-btn" style="padding: 6px 12px; background: #fee2e2; color: #dc2626; border-color: #fecaca;" onclick="deleteApp(${app.application_id})">
-                    <i class="fas fa-trash"></i>
+            <td><span style="font-size:0.85rem; font-weight:600; color:#6366f1;">${app.interview_round && app.interview_round > 0 ? 'Round ' + app.interview_round : 'None'}</span></td>
+            <td class="edit-col" style="display:${editMode ? 'table-cell' : 'none'};">
+                <button onclick="event.stopPropagation(); deleteApplication(${app.application_id})"
+                    style="background:none; border:1px solid #fecaca; color:#dc2626; padding:4px 12px; border-radius:8px; cursor:pointer; font-size:0.8rem; font-weight:600;">
+                    Delete
                 </button>
             </td>
         </tr>
     `).join('');
 }
 
-function renderInterviewBadge(app) {
-    if (!app.interview_round || app.interview_round === 0) return '<span class="status-badge" style="background: #f1f5f9; color: #64748b;">No Interview</span>';
-
-    let color = '#6366f1'; // Default blue
-    if (app.interview_result === 'Passed') color = '#10b981';
-    if (app.interview_result === 'Failed') color = '#ef4444';
-
-    return `
-        <div class="interview-badge" style="border-left-color: ${color}">
-            <div style="font-weight: 700; font-size: 0.8rem;">Round ${app.interview_round}</div>
-            <div style="font-size: 0.7rem; opacity: 0.8;">${app.interview_mode || 'N/A'}</div>
-        </div>
-    `;
-}
-
 function toggleEditMode() {
-    isEditMode = !isEditMode;
+    editMode = !editMode;
     const btn = document.getElementById('editTrackerBtn');
-    if (isEditMode) {
-        btn.innerHTML = '<i class="fas fa-check" style="margin-right: 8px;"></i>Done Editing';
-        btn.style.background = 'var(--primary)';
-        btn.style.color = 'white';
+    const editCols = document.querySelectorAll('.edit-col');
+
+    if (editMode) {
+        btn.innerHTML = '<i class="fas fa-times" style="margin-right:8px;"></i>Done';
+        editCols.forEach(col => col.style.display = 'table-cell');
     } else {
-        btn.innerHTML = '<i class="fas fa-edit" style="margin-right: 8px;"></i>Edit Tracker';
-        btn.style.background = '#f8fafc';
-        btn.style.color = '#475569';
+        btn.innerHTML = '<i class="fas fa-edit" style="margin-right:8px;"></i>Edit Tracker';
+        editCols.forEach(col => col.style.display = 'none');
     }
-    renderTracker();
 }
 
-async function deleteApp(id) {
-    if (!confirm("Are you sure you want to remove this application from your tracker? This action cannot be undone.")) return;
+async function deleteApplication(applicationId) {
+    if (!confirm('Delete this application from your tracker?')) return;
 
     try {
-        const res = await fetch(`${API}/api/applications/${id}`, { method: 'DELETE' });
+        const res = await fetch(`${API}/api/applications/${applicationId}`, { method: 'DELETE' });
         if (res.ok) {
-            applications = applications.filter(a => a.application_id !== id);
-            renderTracker();
+            applications = applications.filter(a => a.application_id !== applicationId);
+            if (applications.length === 0) {
+                document.getElementById('trackerBody').innerHTML =
+                    '<tr><td colspan="7" class="table-empty">No applications yet. Go to <a href="jobs.html" style="color:#6366F1;">Jobs</a> to start applying!</td></tr>';
+            } else {
+                renderTable();
+            }
         } else {
-            alert("Failed to delete application.");
+            const err = await res.json();
+            alert(err.detail || 'Failed to delete application.');
         }
     } catch {
-        alert("Connection error.");
+        alert('Connection error. Please try again.');
     }
 }
 
-function showJobDetails(appId) {
-    const app = applications.find(a => a.application_id === appId);
+function openDetailModal(index) {
+    const app = applications[index];
     if (!app) return;
 
-    document.getElementById('detailTitle').textContent = app.title || app.job_title;
-    document.getElementById('detailCompany').textContent = `${app.company_name || app.company} · Applied on ${new Date(app.applied_date).toLocaleDateString()}`;
+    document.getElementById('detailTitle').textContent = app.title;
+    document.getElementById('detailCompany').textContent = app.company;
 
     document.getElementById('detailMeta').innerHTML = `
-        <span class="meta-tag"><i class="fas fa-briefcase" style="margin-right: 8px;"></i>${app.job_type || 'Full-time'}</span>
-        <span class="status-badge status-${app.status}" style="font-size: 0.9rem;">${app.status}</span>
+        <span class="meta-tag">💼 ${app.type || 'N/A'}</span>
+        <span class="meta-tag">💰 ${app.salary || 'N/A'}</span>
+        <span class="meta-tag">📅 Applied: ${new Date(app.date).toLocaleDateString()}</span>
+        <span class="meta-tag"><span class="status-badge status-${app.status}">${app.status}</span></span>
+        ${app.interview_round && app.interview_round > 0 ? `<span class="meta-tag">🎯 Interview Round: ${app.interview_round}</span>` : ''}
+        ${app.interview_mode ? `<span class="meta-tag">📞 Mode: ${app.interview_mode}</span>` : ''}
+        ${app.interview_date ? `<span class="meta-tag">🗓 Date: ${new Date(app.interview_date).toLocaleDateString()}</span>` : ''}
+        ${app.interview_result ? `<span class="meta-tag">✅ Result: ${app.interview_result}</span>` : ''}
     `;
 
-    document.getElementById('detailDesc').textContent = app.description || "No description available for this tracked job.";
-    document.getElementById('detailNotes').textContent = app.notes || "No notes added for this application.";
-
+    document.getElementById('detailNotes').textContent = app.notes || 'No notes added for this application.';
     document.getElementById('detailModal').classList.add('active');
 }
 
 function closeDetailModal() {
     document.getElementById('detailModal').classList.remove('active');
-}
-
-function unescape(str) {
-    if (!str) return '';
-    return str.replace(/\\'/g, "'");
 }
 
 loadTracker();

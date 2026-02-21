@@ -56,14 +56,5 @@ async function loadRecentApplications() {
     }
 }
 
-// ─── Auth ─────────────────────────────────────────────────────
-
-function logout() {
-    localStorage.removeItem('user');
-    window.location.href = 'index.html';
-}
-
-// ─── Init ─────────────────────────────────────────────────────
-
 loadStats();
 loadRecentApplications();
