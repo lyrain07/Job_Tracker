@@ -1,142 +1,261 @@
-const API = 'http://localhost:8000';
+const API = 'http://127.0.0.1:8000';
 
 const user = JSON.parse(localStorage.getItem('user'));
 if (!user) window.location.href = 'login.html';
 
 let allJobs = [];
-let selectedJobId = null;
+let selectedJob = null;
+let appliedJobIds = new Set();
 
 async function loadJobs() {
-    const grid = document.getElementById('jobsGrid');
-    grid.innerHTML = '<div class="loading-placeholder"><p class="page-subtitle">Loading jobs...</p></div>';
+    const list = document.getElementById('jobsList');
+    list.innerHTML = '<div class="list-empty"><i class="fas fa-spinner fa-spin"></i><p>Loading jobs...</p></div>';
 
     try {
-        const res = await fetch(`${API}/api/jobs`);
+        const [jobsRes, appsRes] = await Promise.all([
+            fetch(`${API}/api/jobs`),
+            fetch(`${API}/api/applications/${user.user_id}`)
+        ]);
 
-        // Log status to help debug
-        console.log('Jobs API status:', res.status);
+        if (!jobsRes.ok) throw new Error(`Jobs API error: ${jobsRes.status}`);
 
-        if (!res.ok) {
-            const errText = await res.text();
-            console.error('Jobs API error body:', errText);
-            throw new Error(`HTTP ${res.status}`);
+        const jobs = await jobsRes.json();
+        if (!Array.isArray(jobs)) throw new Error('Invalid jobs response');
+
+        allJobs = jobs;
+
+        if (appsRes.ok) {
+            const apps = await appsRes.json();
+            if (Array.isArray(apps)) {
+                apps.forEach(app => {
+                    const match = allJobs.find(j => j.title === app.title && j.company === app.company);
+                    if (match) appliedJobIds.add(match.job_id);
+                });
+            }
         }
 
-        const data = await res.json();
-        console.log('Jobs loaded:', data);
+        populateLocationFilter(jobs);
+        renderJobList(jobs);
 
-        if (!Array.isArray(data)) throw new Error('Response is not an array');
-
-        allJobs = data;
-        renderJobs(allJobs);
+        // Auto-select first job
+        if (jobs.length > 0) {
+            const firstItem = document.querySelector('.job-list-item');
+            selectJob(jobs[0], firstItem);
+        }
 
     } catch (err) {
         console.error('Failed to load jobs:', err);
-        grid.innerHTML = `
-            <div class="loading-placeholder">
-                <p class="page-subtitle" style="color:#F87171">
-                    ⚠️ Failed to load jobs (${err.message})<br>
-                    <small style="color:#94a3b8; margin-top:8px; display:block;">
-                        Check: backend running at <strong>${API}</strong>?
-                        Open browser console (F12) for details.
-                    </small>
-                </p>
+        list.innerHTML = `
+            <div class="list-empty">
+                <i class="fas fa-exclamation-circle" style="color:#f87171;opacity:0.6;"></i>
+                <p style="color:#f87171;">Failed to load jobs.<br>
+                <small style="color:var(--lt-text-muted);">${err.message}</small></p>
             </div>`;
+        document.getElementById('jobsCount').textContent = '0 jobs found';
     }
 }
 
-function renderJobs(jobs) {
-    const grid = document.getElementById('jobsGrid');
-    if (jobs.length === 0) {
-        grid.innerHTML = '<div class="loading-placeholder"><p class="page-subtitle">No jobs found.</p></div>';
-        return;
-    }
-
-    // Use data-index to avoid any string escaping issues with job title/company
-    grid.innerHTML = jobs.map((job, i) => `
-        <div class="job-card" data-index="${i}">
-            <h3>${job.title}</h3>
-            <div class="company">${job.company}</div>
-            <div class="job-meta">
-                <span class="meta-tag">💼 ${job.type || 'Full-time'}</span>
-                <span class="meta-tag">📍 ${job.location || 'Remote'}</span>
-                <span class="meta-tag">💰 ${job.salary || 'Competitive'}</span>
-            </div>
-            <button class="btn-primary apply-btn">Apply Now</button>
-        </div>
-    `).join('');
-
-    // Attach click listeners after render — avoids apostrophe/quote breaking onclick
-    grid.querySelectorAll('.job-card').forEach(card => {
-        const job = jobs[parseInt(card.dataset.index)];
-        card.querySelector('.apply-btn').addEventListener('click', () => {
-            openApplyModal(job.job_id, job.title, job.company);
-        });
+function populateLocationFilter(jobs) {
+    const locations = [...new Set(jobs.map(j => j.location).filter(Boolean))].sort();
+    const select = document.getElementById('filterLocation');
+    select.innerHTML = '<option value="">All Locations</option>';
+    locations.forEach(loc => {
+        const opt = document.createElement('option');
+        opt.value = loc;
+        opt.textContent = loc;
+        select.appendChild(opt);
     });
 }
 
 function filterJobs() {
-    const query = document.getElementById('jobSearch').value.toLowerCase();
-    const matches = allJobs.filter(job =>
-        job.title.toLowerCase().includes(query) ||
-        job.company.toLowerCase().includes(query) ||
-        (job.location || '').toLowerCase().includes(query)
-    );
-    renderJobs(matches);
+    const query = document.getElementById('jobSearch').value.toLowerCase().trim();
+    const typeFilter = document.getElementById('filterType').value.toLowerCase();
+    const locationFilter = document.getElementById('filterLocation').value.toLowerCase();
+
+    const filtered = allJobs.filter(job => {
+        const matchSearch = !query ||
+            job.title.toLowerCase().includes(query) ||
+            job.company.toLowerCase().includes(query);
+        const matchType = !typeFilter || (job.type || '').toLowerCase() === typeFilter;
+        const matchLocation = !locationFilter || (job.location || '').toLowerCase() === locationFilter;
+        return matchSearch && matchType && matchLocation;
+    });
+
+    renderJobList(filtered);
 }
 
-function openApplyModal(jobId, title, company) {
-    selectedJobId = jobId;
-    document.getElementById('modalJobTitle').textContent = `Apply for ${title}`;
-    document.getElementById('modalCompany').textContent = company;
-    document.getElementById('applyNotes').value = '';
-    document.getElementById('applyModal').classList.add('active');
-    const msg = document.getElementById('modalMessage');
-    if (msg) msg.style.display = 'none';
+function renderJobList(jobs) {
+    const list = document.getElementById('jobsList');
+    const countEl = document.getElementById('jobsCount');
+
+    countEl.textContent = `${jobs.length} job${jobs.length !== 1 ? 's' : ''} found`;
+
+    if (jobs.length === 0) {
+        list.innerHTML = '<div class="list-empty"><i class="fas fa-search"></i><p>No jobs match your filters.</p></div>';
+        return;
+    }
+
+    list.innerHTML = '';
+
+    jobs.forEach(job => {
+        const isApplied = appliedJobIds.has(job.job_id);
+        const item = document.createElement('div');
+        item.className = 'job-list-item';
+        if (selectedJob && selectedJob.job_id === job.job_id) item.classList.add('active');
+
+        item.innerHTML = `
+            <div class="job-item-title">${escHtml(job.title)}</div>
+            <div class="job-item-company">${escHtml(job.company)}</div>
+            <div class="job-item-tags">
+                ${job.type ? `<span class="job-item-tag">💼 ${escHtml(job.type)}</span>` : ''}
+                ${job.location ? `<span class="job-item-tag">📍 ${escHtml(job.location)}</span>` : ''}
+                ${job.salary ? `<span class="job-item-tag">💰 ${escHtml(job.salary)}</span>` : ''}
+                ${isApplied ? `<span class="job-item-tag" style="background:#ecfdf5;color:#059669;">✓ Applied</span>` : ''}
+            </div>`;
+
+        item.addEventListener('click', () => selectJob(job, item));
+        list.appendChild(item);
+    });
 }
 
-function closeModal() {
-    document.getElementById('applyModal').classList.remove('active');
-    selectedJobId = null;
+function selectJob(job, itemEl) {
+    selectedJob = job;
+    document.querySelectorAll('.job-list-item').forEach(el => el.classList.remove('active'));
+    if (itemEl) itemEl.classList.add('active');
+    renderJobDetail(job);
+}
+
+function renderJobDetail(job) {
+    const isApplied = appliedJobIds.has(job.job_id);
+    const detail = document.getElementById('jobDetail');
+
+    detail.innerHTML = `
+        <!-- ACTION BAR — pinned at top -->
+        <div class="detail-action-bar">
+            ${job.application_link ? `
+            <a href="${escAttr(job.application_link)}" target="_blank" rel="noopener noreferrer" class="btn-ext-link">
+                <i class="fas fa-external-link-alt"></i> Apply Externally
+            </a>` : ''}
+            <button
+                class="btn-track ${isApplied ? 'tracked' : ''}"
+                id="trackBtn"
+                onclick="openConfirmModal()"
+                ${isApplied ? 'disabled' : ''}>
+                ${isApplied
+            ? '<i class="fas fa-check"></i> Already Tracked'
+            : '<i class="fas fa-bookmark"></i> Track Application'}
+            </button>
+        </div>
+
+        <!-- SCROLLABLE description area -->
+        <div class="detail-scroll-area">
+            <div class="job-detail-title">${escHtml(job.title)}</div>
+            <div class="job-detail-company">${escHtml(job.company)}</div>
+            <div class="job-detail-tags">
+                ${job.type ? `<span class="detail-tag"><i class="fas fa-briefcase"></i>${escHtml(job.type)}</span>` : ''}
+                ${job.location ? `<span class="detail-tag"><i class="fas fa-map-marker-alt"></i>${escHtml(job.location)}</span>` : ''}
+                ${job.salary ? `<span class="detail-tag"><i class="fas fa-dollar-sign"></i>${escHtml(job.salary)}</span>` : ''}
+            </div>
+
+            ${job.description ? `
+            <div class="job-desc-label">Job Description</div>
+            <p class="job-desc-text">${escHtml(job.description).replace(/\n/g, '<br>')}</p>
+            ` : '<p style="color:var(--lt-text-muted);">No description available.</p>'}
+        </div>`;
+}
+
+function openConfirmModal() {
+    if (!selectedJob) return;
+    document.getElementById('modalJobTitle').textContent = selectedJob.title;
+    document.getElementById('modalJobCompany').textContent = selectedJob.company;
+
+    const msg = document.getElementById('feedbackMsg');
+    msg.className = 'feedback-message';
+    msg.style.display = 'none';
+    msg.textContent = '';
+
+    const btn = document.getElementById('confirmYesBtn');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-bookmark"></i> Yes, track it!';
+
+    document.getElementById('confirmModal').classList.add('active');
+}
+
+function closeConfirmModal() {
+    document.getElementById('confirmModal').classList.remove('active');
 }
 
 async function confirmApply() {
-    const notes = document.getElementById('applyNotes').value;
-    const btn = document.getElementById('confirmApplyBtn');
+    if (!selectedJob || !user) return;
+
+    const btn = document.getElementById('confirmYesBtn');
+    const msg = document.getElementById('feedbackMsg');
+
     btn.disabled = true;
-    btn.textContent = 'Applying...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
 
     try {
         const res = await fetch(`${API}/api/jobs/apply`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user_id: user.user_id, job_id: selectedJobId, notes })
+            body: JSON.stringify({ user_id: user.user_id, job_id: selectedJob.job_id, notes: '' })
         });
+
         const data = await res.json();
-        const msgEl = document.getElementById('modalMessage');
+
         if (res.ok) {
-            msgEl.textContent = 'Application submitted successfully!';
-            msgEl.style.display = 'block';
-            msgEl.style.backgroundColor = '#ECFDF5';
-            msgEl.style.color = '#059669';
-            setTimeout(closeModal, 1500);
+            appliedJobIds.add(selectedJob.job_id);
+            msg.textContent = '✓ Added to your tracker!';
+            msg.className = 'feedback-message feedback-success';
+            msg.style.display = 'block';
+            btn.innerHTML = '<i class="fas fa-check"></i> Done!';
+            filterJobs();
+            renderJobDetail(selectedJob);
+            setTimeout(closeConfirmModal, 1800);
         } else {
-            msgEl.textContent = data.detail || 'Failed to apply. You may have already applied.';
-            msgEl.style.display = 'block';
-            msgEl.style.backgroundColor = '#FEF2F2';
-            msgEl.style.color = '#DC2626';
+            const errText = data.detail || 'Failed to track application.';
+            if (errText.toLowerCase().includes('already applied')) {
+                appliedJobIds.add(selectedJob.job_id);
+                msg.textContent = 'Already tracked!';
+                msg.className = 'feedback-message feedback-success';
+                filterJobs();
+                renderJobDetail(selectedJob);
+                setTimeout(closeConfirmModal, 1800);
+            } else {
+                msg.textContent = errText;
+                msg.className = 'feedback-message feedback-error';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-bookmark"></i> Yes, track it!';
+            }
+            msg.style.display = 'block';
         }
-    } catch {
-        const msgEl = document.getElementById('modalMessage');
-        msgEl.textContent = 'Connection error. Try again.';
-        msgEl.style.display = 'block';
-        msgEl.style.backgroundColor = '#FEF2F2';
-        msgEl.style.color = '#DC2626';
-    } finally {
+    } catch (err) {
+        console.error('Apply error:', err);
+        msg.textContent = 'Connection error. Please try again.';
+        msg.className = 'feedback-message feedback-error';
+        msg.style.display = 'block';
         btn.disabled = false;
-        btn.textContent = 'Confirm Application';
+        btn.innerHTML = '<i class="fas fa-bookmark"></i> Yes, track it!';
     }
 }
 
-document.getElementById('confirmApplyBtn').addEventListener('click', confirmApply);
+function escHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function escAttr(str) {
+    if (!str) return '#';
+    return /^https?:\/\//i.test(str) ? str : '#';
+}
+
+document.getElementById('confirmModal').addEventListener('click', function (e) {
+    if (e.target === this) closeConfirmModal();
+});
+
 loadJobs();

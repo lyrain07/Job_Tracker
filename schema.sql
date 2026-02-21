@@ -306,7 +306,16 @@ INSERT INTO jobs (company_id, title, description, job_type, salary_range) VALUES
 'Full-time', '$80k-$120k'),
 
 (3, 'Backend Developer',
-'We are seeking a skilled Backend Developer to build and maintain secure, high-performance server-side applications. You will design scalable APIs, manage database interactions, and ensure system reliability and security. The ideal candidate has experience with backend technologies such as FastAPI or similar frameworks, and strong knowledge of PostgreSQL or other relational databases. Responsibilities include implementing authentication mechanisms, optimizing queries, and collaborating with frontend teams for smooth feature integration. Familiarity with containerization tools like Docker and deployment workflows is considered a strong advantage. This remote role offers flexibility and the chance to contribute to architecture-level decisions.',
+'We are seeking a skilled Backend Developer to build and maintain secure, 
+high-performance server-side applications. You will design scalable APIs,
+ manage database interactions, and ensure system reliability and security. 
+ The ideal candidate has experience with backend technologies such as FastAPI or similar frameworks,
+ and strong knowledge of PostgreSQL or other relational databases. 
+ Responsibilities include implementing authentication mechanisms, 
+ optimizing queries, and collaborating with frontend teams for smooth feature integration.
+  Familiarity with containerization tools like Docker and deployment workflows is
+   considered a strong advantage. This remote role offers flexibility and the chance
+    to contribute to architecture-level decisions.',
 'Remote', '$95k-$140k'),
 
 (4, 'UI/UX Designer',
