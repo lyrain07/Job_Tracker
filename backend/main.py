@@ -14,7 +14,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://melodious-pithivier-e6df60.netlify.app", 
+        "https://melodious-pithivier-e6df60.netlify.app/", 
         # "http://localhost:5500",
         # "http://127.0.0.1:5500",
     ],
