@@ -47,27 +47,16 @@ async function register() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, password })
         });
-
-        let data;
-        try {
-            data = await res.json();
-        } catch (e) {
-            data = { detail: 'Server error occurred' };
-        }
+        const data = await res.json();
 
         if (res.ok) {
             showMessage('Registration successful! Please login.', 'success');
             setTimeout(showLoginPage, 2000);
         } else {
-            // Handle validation errors (array of objects) or single string detail
-            const msg = Array.isArray(data.detail)
-                ? data.detail.map(d => d.msg).join(', ')
-                : data.detail || 'Registration failed';
-            showMessage(msg, 'error');
+            showMessage(data.detail || 'Registration failed', 'error');
         }
-    } catch (err) {
-        console.error('Registration error:', err);
-        showMessage('Cannot connect to server. Check your internet or if the backend is down.', 'error');
+    } catch {
+        showMessage('Cannot connect to server. Is the backend running?', 'error');
     }
 }
 
@@ -88,26 +77,16 @@ async function login() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
         });
-
-        let data;
-        try {
-            data = await res.json();
-        } catch (e) {
-            data = { detail: 'Server error occurred' };
-        }
+        const data = await res.json();
 
         if (res.ok) {
             localStorage.setItem('user', JSON.stringify(data));
             showMessage('Login successful! Redirecting...', 'success');
             setTimeout(() => window.location.href = 'dashboard.html', 1000);
         } else {
-            const msg = Array.isArray(data.detail)
-                ? data.detail.map(d => d.msg).join(', ')
-                : data.detail || 'Invalid email or password';
-            showMessage(msg, 'error');
+            showMessage(data.detail || 'Invalid email or password', 'error');
         }
-    } catch (err) {
-        console.error('Login error:', err);
-        showMessage('Cannot connect to server. Check your internet or if the backend is down.', 'error');
+    } catch {
+        showMessage('Cannot connect to server. Is the backend running?', 'error');
     }
 }

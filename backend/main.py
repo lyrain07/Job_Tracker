@@ -13,8 +13,12 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # More robust for production since using localStorage auth
-    allow_credentials=False,
+    allow_origins=[
+        "https://melodious-pithivier-e6df60.netlify.app", 
+        # "http://localhost:5500",
+        # "http://127.0.0.1:5500",
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -371,7 +375,7 @@ async def upload_resume(file: UploadFile = File(...)):
     filepath = os.path.join(UPLOAD_DIR, filename)
     with open(filepath, "wb") as f:
         f.write(await file.read())
-    return {"resume_url": f"/api/resumes/{filename}"}
+    return {"resume_url": f"https://jobtracker-production-d93f.up.railway.app/api/resumes/{filename}"}
 
 @app.get("/api/skills")
 def get_all_skills():
