@@ -14,9 +14,9 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://melodious-pithivier-e6df60.netlify.app/", 
-        # "http://localhost:5500",
-        # "http://127.0.0.1:5500",
+        "https://your-app.vercel.app",   # add this after you deploy
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -375,7 +375,8 @@ async def upload_resume(file: UploadFile = File(...)):
     filepath = os.path.join(UPLOAD_DIR, filename)
     with open(filepath, "wb") as f:
         f.write(await file.read())
-    return {"resume_url": f"https://jobtracker-production-d93f.up.railway.app/api/resumes/{filename}"}
+    BASE_URL = os.environ.get("BASE_URL", "http://localhost:8000")
+    return {"resume_url": f"{BASE_URL}/api/resumes/{filename}"}
 
 @app.get("/api/skills")
 def get_all_skills():
