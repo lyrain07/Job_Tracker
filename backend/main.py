@@ -14,9 +14,9 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://your-app.vercel.app",   # add this after you deploy
-        "http://localhost:5500",
-        "http://127.0.0.1:5500",
+        "https://job-tracker-n3s7v10be-lyrain07s-projects.vercel.app",
+        # "http://localhost:5500",
+        # "http://127.0.0.1:5500",  for local development
     ],
     allow_credentials=True,
     allow_methods=["*"],
