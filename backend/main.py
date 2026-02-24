@@ -17,8 +17,8 @@ app.add_middleware(
         "https://job-tracker-two-amber.vercel.app",
         "https://job-tracker-git-main-lyrain07s-projects.vercel.app",
         "https://job-tracker-q5r8c97rj-lyrain07s-projects.vercel.app",
-        # "http://localhost:5500",
-        # "http://127.0.0.1:5500",  for local development
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",  #for local development
     ],
     allow_origin_regex=r"https://job-tracker-.*\.vercel\.app",
     allow_credentials=True,

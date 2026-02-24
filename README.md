@@ -7,6 +7,18 @@ A simple job tracking application with a FastAPI backend and a vanilla HTML/CSS/
 - PostgreSQL installed and running.
 - Python 3.8+ installed.
 
+## 🚀 Live Demo
+
+- **Frontend:** [Job Tracker](https://job-tracker-git-main-lyrain07s-projects.vercel.app)
+- **Backend API:** [API Docs](https://job-tracker-8e22.onrender.com/docs)
+
+## 🛠️ Tech Stack
+
+- **Frontend:** HTML, CSS, JavaScript
+- **Backend:** FastAPI (Python)
+- **Database:** PostgreSQL (Neon)
+- **Hosting:** Vercel (Frontend) + Render (Backend)
+
 ## Setup Instructions
 
 ### 1. Database Setup
