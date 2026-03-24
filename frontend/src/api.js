@@ -12,23 +12,33 @@ function authHeaders(extra = {}) {
 }
 
 export async function apiGet(path) {
-  const res = await fetch(`${API_BASE}${path}`, { headers: authHeaders() });
-  if (res.status === 401) {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    window.location.href = '/login';
-    throw new Error('Unauthorized');
+  try {
+    const res = await fetch(`${API_BASE}${path}`, { headers: authHeaders() });
+    if (res.status === 401) {
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+      throw new Error('Unauthorized');
+    }
+    return res;
+  } catch (err) {
+    console.error(`API_GET ERROR [${path}]:`, err);
+    throw err;
   }
-  return res;
 }
 
 export async function apiPost(path, body) {
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: 'POST',
-    headers: authHeaders(),
-    body: JSON.stringify(body),
-  });
-  return res;
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify(body),
+    });
+    return res;
+  } catch (err) {
+    console.error(`API_POST ERROR [${path}]:`, err);
+    throw err;
+  }
 }
 
 export async function apiPut(path, body) {
