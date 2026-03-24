@@ -639,6 +639,24 @@ tr:hover td {
     text-align: center;
 }
 
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 12px;
+}
+
+.social-links a {
+    color: var(--text-muted);
+    font-size: 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.social-links a:hover {
+    color: var(--primary);
+    transform: translateY(-2px);
+}
+
 
 .auth-body {
     background: radial-gradient(circle at top right, #1e1b4b, #1e1b4b);
