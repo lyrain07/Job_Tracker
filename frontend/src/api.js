@@ -1,4 +1,4 @@
-const API_BASE = 'https://job-tracker-8e22.onrender.com';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 function getToken() {
   return localStorage.getItem('token');

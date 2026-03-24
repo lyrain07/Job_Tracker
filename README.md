@@ -45,7 +45,12 @@ A job tracking application with a FastAPI backend and a React (Vite) SPA fronten
    ```bash
    pip install -r requirements.txt
    ```
-3. Start the FastAPI server:
+3. Create a `.env` file in the `backend` folder (already created for you) with your local database credentials:
+   ```env
+   DATABASE_URL=postgresql://postgres:777@localhost:5432/Job_Tracker
+   SECRET_KEY=your-local-secret
+   ```
+4. Start the FastAPI server:
    ```bash
    uvicorn main:app --reload
    ```
@@ -61,12 +66,15 @@ A job tracking application with a FastAPI backend and a React (Vite) SPA fronten
    ```bash
    npm install
    ```
-3. Start the development server:
+3. Create a `.env.local` file (already created for you) to point to your local backend:
+   ```env
+   VITE_API_BASE_URL=http://localhost:8000
+   ```
+4. Start the development server:
    ```bash
    npm run dev
    ```
    Open `http://localhost:5173` in your browser.
-   Then visit `http://localhost:3000`.
 
 ## Features
 - User Registration & Login
