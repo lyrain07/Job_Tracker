@@ -28,19 +28,28 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://job-tracker-two-amber.vercel.app",
-        "https://job-tracker-git-main-lyrain07s-projects.vercel.app",
-        "https://job-tracker-q5r8c97rj-lyrain07s-projects.vercel.app",
-        "http://localhost:5500",
-        "http://127.0.0.1:5500",  #for local development
-        "http://localhost:5173",   # Vite React dev server
+        "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
     ],
-    allow_origin_regex=r"https://job-tracker-.*\.vercel\.app",
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/api/health")
+def health_check():
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT 1")
+        cur.close()
+        conn.close()
+        return {"status": "healthy", "database": "connected"}
+    except Exception as e:
+        return {"status": "unhealthy", "database": str(e)}
 
 UPLOAD_DIR = "backend/uploads"
 if not os.path.exists(UPLOAD_DIR):
