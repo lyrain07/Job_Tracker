@@ -79,9 +79,9 @@ const Landing = () => {
               <div className="contact-icon"><i className="fas fa-share-alt"></i></div>
               <h3>Follow Us</h3>
               <div className="social-links" style={{ justifyContent: 'center', marginTop: '12px', gap: '24px' ,marginRight:'5px'}}>
-                <a href="https://github.com/lyrain07"><i className="fab fa-github"></i></a>
-                <a href="mailto:reemashrestha2019@gmail.com"><i className="fas fa-envelope"></i></a>
-                <a href="https://www.facebook.com/0rain.7"><i className="fab fa-facebook"></i></a>
+                <a href="https://github.com/lyrain07"><i className="fab fa-github"> </i></a>
+                <a href="mailto:reemashrestha2019@gmail.com"><i className="fas fa-envelope"> </i></a>
+                <a href="https://www.facebook.com/0rain.7"><i className="fab fa-facebook"> </i></a>
                 <a href="https://www.instagram.com/"><i className="fab fa-instagram"></i></a>
               </div>
             </div>
