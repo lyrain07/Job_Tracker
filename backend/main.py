@@ -1,4 +1,5 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordBearer
@@ -10,7 +11,12 @@ from jose import JWTError, jwt
 import hashlib
 import os
 import uuid
+import logging
 from datetime import datetime, timedelta
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # ─── JWT Configuration ────────────────────────────────────────
 SECRET_KEY = os.environ.get("SECRET_KEY", "job-tracker-super-secret-key-change-in-production")
@@ -38,11 +44,33 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"GLOBAL ERROR: {str(exc)}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal Server Error", "error": str(exc)},
+        headers={
+            "Access-Control-Allow-Origin": "https://job-tracker-two-amber.vercel.app",
+            "Access-Control-Allow-Credentials": "true"
+        }
+    )
+
 @app.middleware("http")
 async def add_process_time_header(request, call_next):
-    response = await call_next(request)
-    print(f"REQUEST: {request.method} {request.url.path} -> RESPONSE: {response.status_code}")
-    return response
+    try:
+        response = await call_next(request)
+        return response
+    except Exception as e:
+        logger.error(f"MIDDLEWARE ERROR: {str(e)}", exc_info=True)
+        return JSONResponse(
+            status_code=500,
+            content={"detail": "Internal Server Error in Middleware", "error": str(e)},
+            headers={
+                "Access-Control-Allow-Origin": "https://job-tracker-two-amber.vercel.app",
+                "Access-Control-Allow-Credentials": "true"
+            }
+        )
 
 @app.get("/api/health")
 def health_check():
