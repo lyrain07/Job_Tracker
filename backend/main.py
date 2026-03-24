@@ -27,11 +27,22 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origins=[
+        "https://job-tracker-two-amber.vercel.app",
+        "https://job-tracker-git-main-lyrain07s-projects.vercel.app",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173"
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def add_process_time_header(request, call_next):
+    response = await call_next(request)
+    print(f"REQUEST: {request.method} {request.url.path} -> RESPONSE: {response.status_code}")
+    return response
 
 @app.get("/api/health")
 def health_check():
