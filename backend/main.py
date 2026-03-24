@@ -24,7 +24,8 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
 
 # ─── Password Hashing ─────────────────────────────────────────
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Use pbkdf2_sha256 as primary to avoid bcrypt's 72-char limit
+pwd_context = CryptContext(schemes=["pbkdf2_sha256", "bcrypt"], deprecated="auto")
 
 # ─── OAuth2 scheme ─────────────────────────────────────────────
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login", auto_error=False)
