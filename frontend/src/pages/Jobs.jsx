@@ -119,14 +119,21 @@ const Jobs = () => {
 
   const locations = [...new Set(allJobs.map(j => j.location).filter(Boolean))].sort();
 
+  const [isDetailActive, setIsDetailActive] = useState(false);
+
+  const handleJobClick = (job) => {
+    setSelectedJob(job);
+    setIsDetailActive(true);
+  };
+
   return (
     <div className="light-theme" style={{ height: '100vh', overflow: 'hidden' }}>
       <div className="page-shell" style={{ paddingTop: '70px' }}>
-        <div className="page-top-bar">
+        <div className="page-top-bar" style={{ display: isDetailActive ? 'none' : 'block' }}>
           <h1>Browse Jobs</h1>
         </div>
 
-        <div className="jobs-layout">
+        <div className={`jobs-layout ${isDetailActive ? 'detail-active' : ''}`}>
           <div className="jobs-left">
             <div className="jobs-left-header">
               <div className="search-wrapper">
@@ -170,7 +177,7 @@ const Jobs = () => {
                   <div 
                     key={job.job_id} 
                     className={`job-list-item ${selectedJob?.job_id === job.job_id ? 'active' : ''}`}
-                    onClick={() => setSelectedJob(job)}
+                    onClick={() => handleJobClick(job)}
                   >
                     <div className="job-item-title">{job.title}</div>
                     <div className="job-item-company">{job.company}</div>
@@ -192,19 +199,23 @@ const Jobs = () => {
             {selectedJob ? (
               <>
                 <div className="detail-action-bar">
+                  <button className="btn-back-mobile" onClick={() => setIsDetailActive(false)}>
+                    <i className="fas fa-arrow-left"></i> Back to Jobs
+                  </button>
                   {selectedJob.application_link && (
-                    <a href={selectedJob.application_link} target="_blank" rel="noopener noreferrer" className="btn-ext-link">
-                      <i className="fas fa-external-link-alt"></i> Apply Externally
+                    <a href={selectedJob.application_link} target="_blank" rel="noopener noreferrer" className="btn-ext-link" style={{ marginLeft: 'auto' }}>
+                      <i className="fas fa-external-link-alt"></i> Apply
                     </a>
                   )}
                   <button 
                     className={`btn-track ${appliedJobIds.has(selectedJob.job_id) ? 'tracked' : ''}`}
                     onClick={() => setIsModalOpen(true)}
                     disabled={appliedJobIds.has(selectedJob.job_id)}
+                    style={{ flex: 'none', width: 'auto' }}
                   >
                     {appliedJobIds.has(selectedJob.job_id) 
-                      ? <><i className="fas fa-check"></i> Already Tracked</> 
-                      : <><i className="fas fa-bookmark"></i> Apply</>}
+                      ? <><i className="fas fa-check"></i> Tracked</> 
+                      : <><i className="fas fa-bookmark"></i> Track It</>}
                   </button>
                 </div>
                 <div className="detail-scroll-area">

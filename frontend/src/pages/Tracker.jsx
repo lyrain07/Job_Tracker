@@ -136,7 +136,9 @@ const Tracker = () => {
           <div className="modal modal-md">
             <div className="modal-header">
               <h2>{selectedApp.title}</h2>
-              <button className="close-modal" onClick={() => setSelectedApp(null)}>&times;</button>
+              <button className="close-btn" onClick={() => setSelectedApp(null)}>
+                <i className="fas fa-times"></i>
+              </button>
             </div>
             <div className="modal-body">
               <div className="job-detail-header detail-header-clean">

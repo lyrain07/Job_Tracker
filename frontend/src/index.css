@@ -1457,3 +1457,82 @@ tr:hover td {
     width: auto !important;
     padding: 12px 32px !important;
 }
+
+/* Responsive Table Wrapper */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+}
+
+/* Modern Close Button */
+.close-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #64748b;
+    padding: 0;
+}
+
+.close-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+    border-color: #cbd5e1;
+}
+
+/* Jobs Page Mobile Refinements */
+@media (max-width: 900px) {
+    .page-shell {
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .jobs-layout {
+        display: block !important;
+        margin: 0 12px 12px !important;
+        height: calc(100vh - 150px) !important;
+    }
+
+    .jobs-layout.detail-active .jobs-left {
+        display: none !important;
+    }
+
+    .jobs-layout:not(.detail-active) .jobs-right {
+        display: none !important;
+    }
+
+    .jobs-left, .jobs-right {
+        height: 100% !important;
+        width: 100% !important;
+        border: none !important;
+    }
+
+    .detail-action-bar {
+        padding: 12px 16px !important;
+    }
+
+    .btn-back-mobile {
+        display: flex !important;
+        align-items: center;
+        gap: 8px;
+        background: none;
+        border: none;
+        color: var(--primary);
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 0.9rem;
+        padding: 8px 0;
+    }
+}
+
+.btn-back-mobile {
+    display: none;
+}

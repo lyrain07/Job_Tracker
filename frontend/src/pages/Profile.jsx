@@ -135,7 +135,9 @@ const Profile = () => {
           <div className="modal">
             <div className="modal-header">
               <h2>Edit Profile</h2>
-              <button onClick={() => setIsEditModalOpen(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#94a3b8' }}>&times;</button>
+              <button className="close-btn" onClick={() => setIsEditModalOpen(false)}>
+                <i className="fas fa-times"></i>
+              </button>
             </div>
             <div className="form-group" style={{ marginTop: '20px' }}>
               <label>Full Name</label>
@@ -162,14 +164,18 @@ const Profile = () => {
           <div className="modal" style={{ maxWidth: '480px' }}>
             <div className="modal-header">
               <h2>Manage Skills</h2>
-              <button onClick={() => setIsSkillsModalOpen(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#94a3b8' }}>&times;</button>
+              <button className="close-btn" onClick={() => setIsSkillsModalOpen(false)}>
+                <i className="fas fa-times"></i>
+              </button>
             </div>
             <p style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', color: '#94a3b8', margin: '16px 0 8px' }}>Your Skills</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', minHeight: '40px', marginBottom: '20px' }}>
               {allSkills.filter(s => selectedSkillIds.includes(s.id)).map(skill => (
                 <span key={skill.id} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#6366F1', color: 'white', padding: '5px 12px', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 600 }}>
                   {skill.name}
-                  <span onClick={() => setSelectedSkillIds(ids => ids.filter(id => id !== skill.id))} style={{ cursor: 'pointer', fontSize: '1rem' }}>&times;</span>
+                  <span onClick={() => setSelectedSkillIds(ids => ids.filter(id => id !== skill.id))} style={{ cursor: 'pointer', fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '18px', height: '18px', background: 'rgba(255,255,255,0.2)', borderRadius: '50%', marginLeft: '4px' }}>
+                    <i className="fas fa-times" style={{ fontSize: '0.65rem' }}></i>
+                  </span>
                 </span>
               ))}
             </div>
