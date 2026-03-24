@@ -1,5 +1,4 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File, Depends, Request
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordBearer
@@ -11,12 +10,7 @@ from jose import JWTError, jwt
 import hashlib
 import os
 import uuid
-import logging
 from datetime import datetime, timedelta, timezone
-
-# Setup logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 # ─── JWT Configuration ────────────────────────────────────────
 SECRET_KEY = os.environ.get("SECRET_KEY", "job-tracker-super-secret-key-change-in-production")
@@ -45,68 +39,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    logger.error(f"GLOBAL ERROR: {str(exc)}", exc_info=True)
-    return JSONResponse(
-        status_code=500,
-        content={"detail": "Internal Server Error", "error": str(exc)},
-        headers={
-            "Access-Control-Allow-Origin": "https://job-tracker-two-amber.vercel.app",
-            "Access-Control-Allow-Credentials": "true"
-        }
-    )
-
-@app.middleware("http")
-async def add_process_time_header(request, call_next):
-    try:
-        response = await call_next(request)
-        return response
-    except Exception as e:
-        logger.error(f"MIDDLEWARE ERROR: {str(e)}", exc_info=True)
-        return JSONResponse(
-            status_code=500,
-            content={"detail": "Internal Server Error in Middleware", "error": str(e)},
-            headers={
-                "Access-Control-Allow-Origin": "https://job-tracker-two-amber.vercel.app",
-                "Access-Control-Allow-Credentials": "true"
-            }
-        )
-
 @app.get("/api/health")
 def health_check():
-    results = {"status": "healthy", "checks": {}}
+    """Simplified health check for production."""
     try:
-        # DB check
         conn = get_connection()
-        cur = conn.cursor()
-        cur.execute("SELECT 1")
-        cur.close()
         conn.close()
-        results["checks"]["database"] = "OK"
+        return {"status": "healthy"}
     except Exception as e:
-        results["status"] = "unhealthy"
-        results["checks"]["database"] = str(e)
-
-    try:
-        # Hashing check
-        h = hash_password("test")
-        verify_password("test", h)
-        results["checks"]["hashing"] = "OK"
-    except Exception as e:
-        results["status"] = "unhealthy"
-        results["checks"]["hashing"] = f"Hashing error: {str(e)}"
-
-    try:
-        # JWT check
-        token = create_access_token({"test": "data"})
-        jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        results["checks"]["jwt"] = "OK"
-    except Exception as e:
-        results["status"] = "unhealthy"
-        results["checks"]["jwt"] = f"JWT error: {str(e)}"
-
-    return results
+        return {"status": "unhealthy", "error": str(e)}
 
 UPLOAD_DIR = "backend/uploads"
 if not os.path.exists(UPLOAD_DIR):
