@@ -1134,6 +1134,12 @@ tr:hover td {
     margin-bottom: 24px;
 }
 
+.job-meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
 .detail-tag {
     display: inline-flex;
     align-items: center;

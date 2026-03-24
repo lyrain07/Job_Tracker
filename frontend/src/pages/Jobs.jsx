@@ -211,11 +211,11 @@ const Jobs = () => {
                     className={`btn-track ${appliedJobIds.has(selectedJob.job_id) ? 'tracked' : ''}`}
                     onClick={() => setIsModalOpen(true)}
                     disabled={appliedJobIds.has(selectedJob.job_id)}
-                    style={{ flex: 'none', width: 'auto' }}
+                    style={{ flex: 1 }}
                   >
                     {appliedJobIds.has(selectedJob.job_id) 
-                      ? <><i className="fas fa-check"></i> Tracked</> 
-                      : <><i className="fas fa-bookmark"></i> Track It</>}
+                      ? <><i className="fas fa-check"></i> Applied</> 
+                      : <><i className="fas fa-bookmark"></i> Apply</>}
                   </button>
                 </div>
                 <div className="detail-scroll-area">
