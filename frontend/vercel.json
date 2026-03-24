@@ -1,6 +1,12 @@
 {
-  "routes": [
-    { "src": "/api/(.*)", "dest": "https://job-tracker-8e22.onrender.com/api/$1" },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://job-tracker-8e22.onrender.com/api/$1"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
   ]
 }
