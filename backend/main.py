@@ -12,7 +12,7 @@ import hashlib
 import os
 import uuid
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -74,15 +74,38 @@ async def add_process_time_header(request, call_next):
 
 @app.get("/api/health")
 def health_check():
+    results = {"status": "healthy", "checks": {}}
     try:
+        # DB check
         conn = get_connection()
         cur = conn.cursor()
         cur.execute("SELECT 1")
         cur.close()
         conn.close()
-        return {"status": "healthy", "database": "connected"}
+        results["checks"]["database"] = "OK"
     except Exception as e:
-        return {"status": "unhealthy", "database": str(e)}
+        results["status"] = "unhealthy"
+        results["checks"]["database"] = str(e)
+
+    try:
+        # Hashing check
+        h = hash_password("test")
+        verify_password("test", h)
+        results["checks"]["hashing"] = "OK"
+    except Exception as e:
+        results["status"] = "unhealthy"
+        results["checks"]["hashing"] = f"Hashing error: {str(e)}"
+
+    try:
+        # JWT check
+        token = create_access_token({"test": "data"})
+        jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        results["checks"]["jwt"] = "OK"
+    except Exception as e:
+        results["status"] = "unhealthy"
+        results["checks"]["jwt"] = f"JWT error: {str(e)}"
+
+    return results
 
 UPLOAD_DIR = "backend/uploads"
 if not os.path.exists(UPLOAD_DIR):
@@ -145,7 +168,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
