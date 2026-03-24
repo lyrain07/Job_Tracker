@@ -9,6 +9,14 @@ A full-stack web app to track job applications, browse jobs, manage interview ro
 
 ## Features
 
+### Landing Page
+Simplified career tracking and modern dashboard design.
+![Landing Page](readme_img/indexpage.png)
+
+### Services & Features
+Exploration of key application features including job search and management.
+![Services](readme_img/Service%20section.png)
+
 ### Authentication
 User registration and login with JWT authentication.
 ![Authentication](readme_img/RegisterPage.png)
@@ -30,6 +38,10 @@ Track applications with status updates, interview round management, and personal
 Professional profile management including resume links and skill sets.
 ![Profile](readme_img/ProfilePage.png)
 ![Edit Skills](readme_img/SkillEdiySection.png)
+
+### Contact Section
+Get in touch and location details.
+![Contact](readme_img/contactsection.png)
 
 ## Tech Stack
 
