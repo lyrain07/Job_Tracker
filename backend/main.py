@@ -1,13 +1,27 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 from typing import List, Optional
 from database import get_connection
+from passlib.context import CryptContext
+from jose import JWTError, jwt
 import hashlib
 import os
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
+
+# ─── JWT Configuration ────────────────────────────────────────
+SECRET_KEY = os.environ.get("SECRET_KEY", "job-tracker-super-secret-key-change-in-production")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
+
+# ─── Password Hashing ─────────────────────────────────────────
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# ─── OAuth2 scheme ─────────────────────────────────────────────
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login", auto_error=False)
 
 app = FastAPI()
 
@@ -19,6 +33,8 @@ app.add_middleware(
         "https://job-tracker-q5r8c97rj-lyrain07s-projects.vercel.app",
         "http://localhost:5500",
         "http://127.0.0.1:5500",  #for local development
+        "http://localhost:5173",   # Vite React dev server
+        "http://127.0.0.1:5173",
     ],
     allow_origin_regex=r"https://job-tracker-.*\.vercel\.app",
     allow_credentials=True,
@@ -32,6 +48,7 @@ if not os.path.exists(UPLOAD_DIR):
 
 app.mount("/api/resumes", StaticFiles(directory=UPLOAD_DIR), name="resumes")
 
+# ─── Pydantic Models ──────────────────────────────────────────
 class RegisterRequest(BaseModel):
     name: str
     email: str
@@ -62,9 +79,50 @@ class ApplicationUpdate(BaseModel):
     notes: Optional[str] = None
     interview_round: Optional[int] = None
 
-def hash_password(password: str):
+# ─── Auth Helpers ──────────────────────────────────────────────
+def hash_password_legacy(password: str):
+    """Legacy SHA-256 hashing for backward compatibility."""
     return hashlib.sha256(password.encode()).hexdigest()
 
+def hash_password(password: str):
+    """Hash password with bcrypt."""
+    return pwd_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify password against bcrypt hash, with SHA-256 fallback for legacy users."""
+    # Try bcrypt first
+    try:
+        if pwd_context.verify(plain_password, hashed_password):
+            return True
+    except Exception:
+        pass
+    # Fallback: SHA-256 for legacy accounts
+    if hash_password_legacy(plain_password) == hashed_password:
+        return True
+    return False
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+def get_current_user(token: str = Depends(oauth2_scheme)):
+    """Dependency that extracts and validates the JWT token."""
+    if token is None:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: int = payload.get("user_id")
+        email: str = payload.get("email")
+        name: str = payload.get("name")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        return {"user_id": user_id, "email": email, "name": name}
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+# ─── Public Routes ─────────────────────────────────────────────
 @app.get("/")
 def home():
     return {"message": "Job Tracker API is running"}
@@ -95,47 +153,42 @@ def login(request: LoginRequest):
     conn = get_connection()
     cur = conn.cursor()
     try:
-        password_hash = hash_password(request.password)
         cur.execute(
-            "SELECT user_id, name, email FROM users WHERE email = %s AND password_hash = %s",
-            (request.email, password_hash)
+            "SELECT user_id, name, email, password_hash FROM users WHERE email = %s",
+            (request.email,)
         )
         user = cur.fetchone()
         if not user:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
-        return {
-            "user_id": user[0],
-            "name": user[1],
-            "email": user[2]
-        }
-    finally:
-        cur.close()
-        conn.close()
+        user_id, name, email, stored_hash = user
 
-@app.get("/api/dashboard/{user_id}")
-def get_dashboard(user_id: int):
-    conn = get_connection()
-    cur = conn.cursor()
-    try:
-        cur.execute("SELECT * FROM user_dashboard WHERE user_id = %s", (user_id,))
-        data = cur.fetchone()
-        if not data:
-            raise HTTPException(status_code=404, detail="User not found")
+        if not verify_password(request.password, stored_hash):
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+        # Upgrade legacy SHA-256 hash to bcrypt on successful login
+        if not stored_hash.startswith("$2"):
+            new_hash = hash_password(request.password)
+            cur.execute("UPDATE users SET password_hash = %s WHERE user_id = %s", (new_hash, user_id))
+            conn.commit()
+
+        # Create JWT token
+        access_token = create_access_token(
+            data={"user_id": user_id, "email": email, "name": name}
+        )
         
         return {
-            "name": data[1],
-            "total_applications": data[3],
-            "applied_count": data[4],
-            "interviewing_count": data[5],
-            "rejected_count": data[6],
-            "hired_count": data[7]
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user_id": user_id,
+            "name": name,
+            "email": email
         }
     finally:
         cur.close()
         conn.close()
 
-
+# ─── Public Job Listings (no auth needed) ──────────────────────
 @app.get("/api/jobs/popular")
 def get_popular_jobs():
     conn = get_connection()
@@ -162,27 +215,6 @@ def get_popular_jobs():
             "location": row[5],
             "application_count": row[6]
         } for row in jobs]
-    finally:
-        cur.close()
-        conn.close()
-
-@app.post("/api/jobs/apply")
-def apply_job(request: ApplyRequest):
-    conn = get_connection()
-    cur = conn.cursor()
-    try:
-        cur.execute(
-            "INSERT INTO applications (user_id, job_id, notes) VALUES (%s, %s, %s) RETURNING application_id",
-            (request.user_id, request.job_id, request.notes)
-        )
-        application_id = cur.fetchone()[0]
-        conn.commit()
-        return {"message": "Application submitted", "application_id": application_id}
-    except Exception as e:
-        conn.rollback()
-        if "unique_user_job" in str(e) or "duplicate key" in str(e).lower():
-            raise HTTPException(status_code=400, detail="You have already applied for this job")
-        raise HTTPException(status_code=500, detail=str(e))
     finally:
         cur.close()
         conn.close()
@@ -218,8 +250,63 @@ def get_jobs(search: Optional[str] = None):
         cur.close()
         conn.close()
 
+@app.get("/api/skills")
+def get_all_skills():
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT skill_id, skill_name FROM skills")
+        return [{"id": row[0], "name": row[1]} for row in cur.fetchall()]
+    finally:
+        cur.close()
+        conn.close()
+
+# ─── Protected Routes (require JWT) ───────────────────────────
+@app.get("/api/dashboard/{user_id}")
+def get_dashboard(user_id: int, current_user: dict = Depends(get_current_user)):
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT * FROM user_dashboard WHERE user_id = %s", (user_id,))
+        data = cur.fetchone()
+        if not data:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        return {
+            "name": data[1],
+            "total_applications": data[3],
+            "applied_count": data[4],
+            "interviewing_count": data[5],
+            "rejected_count": data[6],
+            "hired_count": data[7]
+        }
+    finally:
+        cur.close()
+        conn.close()
+
+@app.post("/api/jobs/apply")
+def apply_job(request: ApplyRequest, current_user: dict = Depends(get_current_user)):
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO applications (user_id, job_id, notes) VALUES (%s, %s, %s) RETURNING application_id",
+            (request.user_id, request.job_id, request.notes)
+        )
+        application_id = cur.fetchone()[0]
+        conn.commit()
+        return {"message": "Application submitted", "application_id": application_id}
+    except Exception as e:
+        conn.rollback()
+        if "unique_user_job" in str(e) or "duplicate key" in str(e).lower():
+            raise HTTPException(status_code=400, detail="You have already applied for this job")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
 @app.get("/api/applications/{user_id}")
-def get_applications(user_id: int):
+def get_applications(user_id: int, current_user: dict = Depends(get_current_user)):
     conn = get_connection()
     cur = conn.cursor()
     try:
@@ -272,7 +359,7 @@ def get_applications(user_id: int):
         conn.close()
 
 @app.put("/api/applications/{application_id}")
-def update_application(application_id: int, request: ApplicationUpdate):
+def update_application(application_id: int, request: ApplicationUpdate, current_user: dict = Depends(get_current_user)):
     conn = get_connection()
     cur = conn.cursor()
     try:
@@ -311,7 +398,7 @@ def update_application(application_id: int, request: ApplicationUpdate):
         conn.close()
 
 @app.delete("/api/applications/{application_id}")
-def delete_application(application_id: int):
+def delete_application(application_id: int, current_user: dict = Depends(get_current_user)):
     conn = get_connection()
     cur = conn.cursor()
     try:
@@ -325,7 +412,7 @@ def delete_application(application_id: int):
         conn.close()
 
 @app.get("/api/profile/{user_id}")
-def get_profile(user_id: int):
+def get_profile(user_id: int, current_user: dict = Depends(get_current_user)):
     conn = get_connection()
     cur = conn.cursor()
     try:
@@ -357,7 +444,7 @@ def get_profile(user_id: int):
         conn.close()
 
 @app.put("/api/profile/{user_id}")
-def update_profile(user_id: int, request: ProfileUpdate):
+def update_profile(user_id: int, request: ProfileUpdate, current_user: dict = Depends(get_current_user)):
     conn = get_connection()
     cur = conn.cursor()
     try:
@@ -372,7 +459,7 @@ def update_profile(user_id: int, request: ProfileUpdate):
         conn.close()
 
 @app.post("/api/upload-resume")
-async def upload_resume(file: UploadFile = File(...)):
+async def upload_resume(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
     ext = os.path.splitext(file.filename)[1]
     filename = f"{uuid.uuid4()}{ext}"
     filepath = os.path.join(UPLOAD_DIR, filename)
@@ -381,19 +468,8 @@ async def upload_resume(file: UploadFile = File(...)):
     BASE_URL = os.environ.get("BASE_URL", "http://localhost:8000")
     return {"resume_url": f"{BASE_URL}/api/resumes/{filename}"}
 
-@app.get("/api/skills")
-def get_all_skills():
-    conn = get_connection()
-    cur = conn.cursor()
-    try:
-        cur.execute("SELECT skill_id, skill_name FROM skills")
-        return [{"id": row[0], "name": row[1]} for row in cur.fetchall()]
-    finally:
-        cur.close()
-        conn.close()
-
 @app.post("/api/user/skills/{user_id}")
-def update_user_skills(user_id: int, request: SkillUpdate):
+def update_user_skills(user_id: int, request: SkillUpdate, current_user: dict = Depends(get_current_user)):
     conn = get_connection()
     cur = conn.cursor()
     try:
