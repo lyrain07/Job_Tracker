@@ -33,20 +33,6 @@ const Jobs = () => {
         if (appsRes.ok) {
           const appsData = await appsRes.json();
           const appliedIds = new Set();
-          appsData.forEach(app => {
-            // Find match in current job list to track which IDs are already applied
-            // Note: In original code they match by title/company, but using ID is better if possible.
-            // Original logic: const match = allJobs.find(j => j.title === app.title && j.company === app.company);
-            // I'll keep the direct title/company matching for strict behavior preservation or ID if backend provides it.
-          });
-          // Since the API returns applications with job_id potentially (based on backend code), I'll use that.
-          appsData.forEach(app => {
-            // Match based on title and company as the vanilla JS did
-            const jobMatch = allJobs.find(j => j.title === app.title && j.company === app.company);
-            if (jobMatch) appliedIds.add(jobMatch.job_id);
-          });
-          // Fix: allJobs might not be populated yet due to Promise.all. 
-          // Let's refine this after the data is set.
         }
       } catch (err) {
         console.error('Jobs load error:', err);

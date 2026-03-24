@@ -12,16 +12,12 @@ import os
 import uuid
 from datetime import datetime, timedelta, timezone
 
-# ─── JWT Configuration ────────────────────────────────────────
 SECRET_KEY = os.environ.get("SECRET_KEY", "job-tracker-super-secret-key-change-in-production")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
-# ─── Password Hashing ─────────────────────────────────────────
-# Use pbkdf2_sha256 as primary to avoid bcrypt's 72-char limit
 pwd_context = CryptContext(schemes=["pbkdf2_sha256", "bcrypt"], deprecated="auto")
 
-# ─── OAuth2 scheme ─────────────────────────────────────────────
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login", auto_error=False)
 
 app = FastAPI()
@@ -41,7 +37,6 @@ app.add_middleware(
 
 @app.get("/api/health")
 def health_check():
-    """Simplified health check for production."""
     try:
         conn = get_connection()
         conn.close()
@@ -55,7 +50,6 @@ if not os.path.exists(UPLOAD_DIR):
 
 app.mount("/api/resumes", StaticFiles(directory=UPLOAD_DIR), name="resumes")
 
-# ─── Pydantic Models ──────────────────────────────────────────
 class RegisterRequest(BaseModel):
     name: str
     email: str
@@ -86,24 +80,18 @@ class ApplicationUpdate(BaseModel):
     notes: Optional[str] = None
     interview_round: Optional[int] = None
 
-# ─── Auth Helpers ──────────────────────────────────────────────
 def hash_password_legacy(password: str):
-    """Legacy SHA-256 hashing for backward compatibility."""
     return hashlib.sha256(password.encode()).hexdigest()
 
 def hash_password(password: str):
-    """Hash password with bcrypt."""
     return pwd_context.hash(password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verify password against bcrypt hash, with SHA-256 fallback for legacy users."""
-    # Try bcrypt first
     try:
         if pwd_context.verify(plain_password, hashed_password):
             return True
     except Exception:
         pass
-    # Fallback: SHA-256 for legacy accounts
     if hash_password_legacy(plain_password) == hashed_password:
         return True
     return False
@@ -115,7 +103,6 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
-    """Dependency that extracts and validates the JWT token."""
     if token is None:
         raise HTTPException(status_code=401, detail="Not authenticated")
     try:
@@ -129,7 +116,6 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
-# ─── Public Routes ─────────────────────────────────────────────
 @app.get("/")
 def home():
     return {"message": "Job Tracker API is running"}
@@ -173,13 +159,11 @@ def login(request: LoginRequest):
         if not verify_password(request.password, stored_hash):
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
-        # Upgrade legacy SHA-256 hash to bcrypt on successful login
         if not stored_hash.startswith("$2"):
             new_hash = hash_password(request.password)
             cur.execute("UPDATE users SET password_hash = %s WHERE user_id = %s", (new_hash, user_id))
             conn.commit()
 
-        # Create JWT token
         access_token = create_access_token(
             data={"user_id": user_id, "email": email, "name": name}
         )
@@ -195,7 +179,6 @@ def login(request: LoginRequest):
         cur.close()
         conn.close()
 
-# ─── Public Job Listings (no auth needed) ──────────────────────
 @app.get("/api/jobs/popular")
 def get_popular_jobs():
     conn = get_connection()
@@ -268,7 +251,6 @@ def get_all_skills():
         cur.close()
         conn.close()
 
-# ─── Protected Routes (require JWT) ───────────────────────────
 @app.get("/api/dashboard/{user_id}")
 def get_dashboard(user_id: int, current_user: dict = Depends(get_current_user)):
     conn = get_connection()
@@ -370,7 +352,6 @@ def update_application(application_id: int, request: ApplicationUpdate, current_
     conn = get_connection()
     cur = conn.cursor()
     try:
-        # Update application status and notes
         cur.execute(
             "UPDATE applications SET status = %s, notes = %s WHERE application_id = %s",
             (request.status, request.notes, application_id)
@@ -378,9 +359,7 @@ def update_application(application_id: int, request: ApplicationUpdate, current_
         if cur.rowcount == 0:
             raise HTTPException(status_code=404, detail="Application not found")
 
-        # Handle interview round if status is 'Interviewing'
         if request.status == 'Interviewing' and request.interview_round is not None:
-            # Check if an interview record already exists for this application
             cur.execute("SELECT interview_id FROM interviews WHERE application_id = %s", (application_id,))
             existing_interview = cur.fetchone()
             

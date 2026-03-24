@@ -13,7 +13,6 @@ def get_connection():
             database_url = database_url.replace("postgres://", "postgresql://", 1)
         return psycopg2.connect(database_url)
     else:
-        # Local fallback
         return psycopg2.connect(
             host="localhost",
             database="Job_Tracker",

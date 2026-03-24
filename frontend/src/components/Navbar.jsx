@@ -26,7 +26,6 @@ const Navbar = () => {
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const closeSidebar = () => setIsSidebarOpen(false);
 
-  // Determine if it's the landing page (uses different dark navbar)
   const isLanding = location.pathname === '/';
 
   return (
