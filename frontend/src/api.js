@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:8000';
+const API_BASE = 'https://job-tracker-8e22.onrender.com';
 
 function getToken() {
   return localStorage.getItem('token');

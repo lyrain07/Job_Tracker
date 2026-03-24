@@ -1,11 +1,12 @@
 # Job Tracker
 
-A simple job tracking application with a FastAPI backend and a vanilla HTML/CSS/JS frontend.
+A job tracking application with a FastAPI backend and a React (Vite) SPA frontend.
 
 ## Prerequisites
 
 - PostgreSQL installed and running.
 - Python 3.8+ installed.
+- Node.js and npm installed.
 
 ## 🚀 Live Demo
 
@@ -14,8 +15,8 @@ A simple job tracking application with a FastAPI backend and a vanilla HTML/CSS/
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** HTML, CSS, JavaScript
-- **Backend:** FastAPI (Python)
+- **Frontend:** React, Vite, React Router, CSS
+- **Backend:** FastAPI (Python), JWT Authentication
 - **Database:** PostgreSQL (Neon)
 - **Hosting:** Vercel (Frontend) + Render (Backend)
 
@@ -42,7 +43,7 @@ A simple job tracking application with a FastAPI backend and a vanilla HTML/CSS/
    ```
 2. Install the required dependencies:
    ```bash
-   pip install fastapi uvicorn psycopg2 pydantic
+   pip install -r requirements.txt
    ```
 3. Start the FastAPI server:
    ```bash
@@ -56,10 +57,15 @@ A simple job tracking application with a FastAPI backend and a vanilla HTML/CSS/
    ```bash
    cd frontend
    ```
-2. Open `index.html` directly in your browser or run a simple server:
+2. Install dependencies:
    ```bash
-   python -m http.server 3000
+   npm install
    ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+   Open `http://localhost:5173` in your browser.
    Then visit `http://localhost:3000`.
 
 ## Features
