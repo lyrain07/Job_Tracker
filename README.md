@@ -7,6 +7,14 @@ A full-stack web app to track job applications, browse jobs, manage interview ro
 - Frontend: [https://job-tracker-two-amber.vercel.app/](https://job-tracker-two-amber.vercel.app/)
 - Backend API Docs: [https://job-tracker-8e22.onrender.com/docs](https://job-tracker-8e22.onrender.com/docs)
 
+## Tech Stack
+
+| Layer | Technologies |
+| :--- | :--- |
+| Frontend | React, Vite, react-router-dom, Vanilla CSS |
+| Backend | FastAPI (Python), JWT (python-jose), bcrypt |
+| Database | PostgreSQL |
+
 ## Features
 
 ### Landing Page
@@ -42,14 +50,6 @@ Professional profile management including resume links and skill sets.
 ### Contact Section
 Get in touch and location details.
 ![Contact](readme_img/contactsection.png)
-
-## Tech Stack
-
-| Layer | Technologies |
-| :--- | :--- |
-| Frontend | React, Vite, react-router-dom, Vanilla CSS |
-| Backend | FastAPI (Python), JWT (python-jose), bcrypt |
-| Database | PostgreSQL |
 
 ## Local Setup
 
